@@ -6,10 +6,10 @@ import java.util.Scanner;
 
 public class Client {
     public static void main(String[] args) {
-        final String IP_SERVIDOR = "localhost"; // Cambia a la IP del servidor si no es local
+        final String IP_SERVIDOR = "192.168.72.69"; // Cambia a la IP del servidor si no es local
         final int PUERTO = 5000;
         
-        System.out.print("Introduce tu nombre de usuario: ");
+        System.out.print("Polo: ");
         Scanner sc = new Scanner(System.in);
         String nombreUsuario = sc.nextLine();
 
