@@ -9,9 +9,7 @@ public class Client {
         final String IP_SERVIDOR = "localhost"; // Cambia a la IP del servidor si no es local
         final int PUERTO = 5000;
         
-        System.out.print("Polo: ");
-        Scanner sc = new Scanner(System.in);
-        String nombreUsuario = sc.nextLine();
+        
 
         try (Socket socket = new Socket(IP_SERVIDOR, PUERTO)) {
             System.out.println("Conectado al chat. Escribe 'chau' para salir.");
@@ -28,20 +26,27 @@ public class Client {
                         System.out.print("> "); // Prompt visual
                     }
                 } catch (IOException e) {
-                    System.out.println("Conexión cerrada.");
+                	System.out.println("Conexión cerrada.");
                 }
             });
+            System.out.print("Añade de tu nombre: ");
+            Scanner sc = new Scanner(System.in);
+            String nombreUsuario = sc.nextLine();
+            out.println(nombreUsuario);
+            System.out.print("> "); // Prompt visual
 
             // Hilo para ENVIAR mensajes al servidor
             Thread enviar = new Thread(() -> {
                 try {
                     while (true) {
+                    	
                         String texto = sc.nextLine();
-                        if (texto.equalsIgnoreCase("chau")) {
-                            socket.close();
-                            break;
-                        }
-                        out.println(nombreUsuario + ": " + texto);
+//                        if (texto.equalsIgnoreCase("chau")) {
+//                            socket.close();
+//                            break;
+//                        }
+                        //out.println(nombreUsuario+": ");
+                        out.println(texto);
                     }
                 } catch (Exception e) {
                     System.out.println("Error al enviar.");

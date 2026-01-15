@@ -30,7 +30,7 @@ public class ManejadorCliente implements Runnable {
             // Registro inicial: El primer mensaje del cliente es su nombre
             this.nombreUsuario = in.readLine();
             Server.mapaClientes.put(nombreUsuario, this);
-            broadcast("SISTEMA: " + nombreUsuario + " se ha unido al chat.");
+            //broadcast("SISTEMA: " + nombreUsuario + " se ha unido al chat.");  FRONTEND LUZ VERDE CONECTADO
 
             String msg;
             while ((msg = in.readLine()) != null) {
@@ -48,7 +48,7 @@ public class ManejadorCliente implements Runnable {
         } finally {
             if (nombreUsuario != null) {
                 Server.mapaClientes.remove(nombreUsuario);
-                broadcast("SISTEMA: " + nombreUsuario + " ha salido.");
+                //broadcast("SISTEMA: " + nombreUsuario + " ha salido.");  FRONTEND LUZ ROJA DESCONECTADO
             }
             try { socket.close(); } catch (IOException e) {}
         }
