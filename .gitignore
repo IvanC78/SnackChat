@@ -1,3 +1,6 @@
 .metadata/
+target/.
+.settings/
+/target/
 target/
 .settings/
