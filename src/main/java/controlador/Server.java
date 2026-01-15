@@ -1,35 +1,45 @@
 package controlador;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
 
 import modelo.ManejadorCliente;
 
+import java.net.*;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+
 public class Server {
+    // Mapa de clientes conectados
+    public static Map<String, ManejadorCliente> mapaClientes = new ConcurrentHashMap<>();
     
-    
-    private static List<PrintWriter> clientes = Collections.synchronizedList(new ArrayList<>());
+    // Fábrica de conexiones Hibernate (Opción A: Única y estática)
+    public static SessionFactory sessionFactory;
 
     public static void main(String[] args) {
         final int PUERTO = 5000;
 
-        try (ServerSocket servidor = new ServerSocket(PUERTO)) {
-            System.out.println(">>> Servidor multichat iniciado en puerto " + PUERTO);
+        try {
+            // 1. Inicializar Hibernate
+            System.out.println("Conectando a la base de datos...");
+            sessionFactory = new Configuration().configure().buildSessionFactory();
+            System.out.println("Base de datos conectada.");
 
-            while (true) {
-                Socket socket = servidor.accept();
-                System.out.println("Nueva conexión: " + socket.getInetAddress());
+            // 2. Iniciar Servidor de Sockets
+            try (ServerSocket servidor = new ServerSocket(PUERTO)) {
+                System.out.println(">>> Servidor Multichat iniciado en puerto " + PUERTO);
 
-                // Creamos el manejador pasándole el socket y la lista de clientes
-                ManejadorCliente manejador = new ManejadorCliente(socket, clientes);
-                
-                // Iniciamos el hilo para este cliente
-                Thread hilo = new Thread(manejador);
-                hilo.start();
+                while (true) {
+                    Socket socket = servidor.accept();
+                    System.out.println("Nueva conexión desde: " + socket.getInetAddress());
+                    
+                    // Iniciamos el hilo manejador
+                    new Thread(new ManejadorCliente(socket)).start();
+                }
             }
-        } catch (IOException e) {
-            System.err.println("Error en el servidor: " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("Error crítico en el servidor: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }
