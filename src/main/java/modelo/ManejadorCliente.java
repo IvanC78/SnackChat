@@ -1,6 +1,5 @@
 package modelo;
 
-import modelo.Mensaje;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -39,8 +38,10 @@ public class ManejadorCliente implements Runnable {
             while ((msg = in.readLine()) != null) {
                 if (msg.startsWith("@")) {
                     enviarPrivado(msg);
-                } else if (msg.startsWith("/congelar ")) {
+                } else if (msg.startsWith("/congelar ") || msg.startsWith("/freeze ")) {
                     procesarMensajeCongelado(msg);
+                } else if (msg.startsWith("/quemar ") || msg.startsWith("/burn ")) {
+                    procesarMensajeQuemado(msg);
                 } else {
                     // Guardar en MySQL
                     guardarEnBD(nombreUsuario, msg);
