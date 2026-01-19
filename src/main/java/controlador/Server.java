@@ -64,9 +64,23 @@ public class Server {
                         session.merge(m);
                     }
 
+                    // 2. Mensajes Quemados (New)
+                    List<modelo.Mensaje> mensajesQuemados = session.createQuery(
+                            "FROM Mensaje m WHERE m.fechaCaducidad <= :now AND m.contenido != m.textoSustituto",
+                            modelo.Mensaje.class)
+                            .setParameter("now", LocalDateTime.now())
+                            .list();
+
+                    for (modelo.Mensaje m : mensajesQuemados) {
+                        if (m.getTextoSustituto() != null) {
+                            m.setContenido(m.getTextoSustituto());
+                            session.merge(m);
+                        }
+                    }
+
                     t.commit();
                 } catch (Exception e) {
-                    System.err.println("Error procesando mensajes congelados: " + e.getMessage());
+                    System.err.println("Error procesando mensajes: " + e.getMessage());
                 }
             }, 0, 10, java.util.concurrent.TimeUnit.SECONDS);
 

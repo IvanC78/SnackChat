@@ -170,4 +170,51 @@ public class ManejadorCliente implements Runnable {
             enviarMensaje("SISTEMA: Formato de tiempo inválido.");
         }
     }
+
+    private void procesarMensajeQuemado(String msg) {
+        // Formato: /quemar 10s Mensaje
+        try {
+            String[] partes = msg.split(" ", 3);
+            if (partes.length < 3) {
+                enviarMensaje("SISTEMA: Uso incorrecto. Ejemplo: /quemar 10s Hola");
+                return;
+            }
+
+            String tiempoStr = partes[1];
+            String contenido = partes[2];
+            long cantidad = Long.parseLong(tiempoStr.replaceAll("[^0-9]", ""));
+            LocalDateTime fechaCaducidad = LocalDateTime.now();
+
+            if (tiempoStr.endsWith("d")) {
+                fechaCaducidad = fechaCaducidad.plusDays(cantidad);
+            } else if (tiempoStr.endsWith("h")) {
+                fechaCaducidad = fechaCaducidad.plusHours(cantidad);
+            } else if (tiempoStr.endsWith("s")) {
+                fechaCaducidad = fechaCaducidad.plusSeconds(cantidad);
+            } else {
+                fechaCaducidad = fechaCaducidad.plusMinutes(cantidad);
+            }
+
+            String textoSustituto = msg.startsWith("/burn") ? "Burned" : "Quemado";
+
+            try (Session session = Server.sessionFactory.openSession()) {
+                Transaction t = session.beginTransaction();
+                // Constructor: emisor, contenido, textoSustituto, fechaCaducidad
+                session.persist(new Mensaje(nombreUsuario, contenido, textoSustituto, fechaCaducidad));
+                t.commit();
+
+                // Broadcast inmediato (visible)
+                broadcast(nombreUsuario + ": " + contenido);
+
+                enviarMensaje("SISTEMA: 🔥 Mensaje que se quemará en " + tiempoStr);
+
+            } catch (Exception e) {
+                enviarMensaje("SISTEMA: Error al guardar mensaje quemado.");
+                e.printStackTrace();
+            }
+
+        } catch (NumberFormatException e) {
+            enviarMensaje("SISTEMA: Formato de tiempo inválido.");
+        }
+    }
 }

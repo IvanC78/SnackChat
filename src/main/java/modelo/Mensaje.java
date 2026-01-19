@@ -28,6 +28,12 @@ public class Mensaje {
     @Column(name = "destinatario")
     private String destinatario; // Null for public messages
 
+    @Column(name = "fecha_caducidad")
+    private LocalDateTime fechaCaducidad;
+
+    @Column(name = "texto_sustituto")
+    private String textoSustituto; // "Quemado" o "Burned"
+
     public Mensaje() {
     } // Constructor vacío obligatorio que pide Hibernate
 
@@ -38,6 +44,20 @@ public class Mensaje {
         this.fechaEnvio = LocalDateTime.now();
         this.fechaVisible = LocalDateTime.now();
         this.enviado = true;
+    }
+
+    // Constructor para mensajes quemados: (emisor, contenido, textoSustituto,
+    // fechaCaducidad)
+    // Nota: Cambiamos el orden para evitar colisión con el constructor de
+    // congelados
+    public Mensaje(String emisor, String contenido, String textoSustituto, LocalDateTime fechaCaducidad) {
+        this.emisor = emisor;
+        this.contenido = contenido;
+        this.fechaEnvio = LocalDateTime.now();
+        this.fechaVisible = LocalDateTime.now();
+        this.enviado = true;
+        this.fechaCaducidad = fechaCaducidad;
+        this.textoSustituto = textoSustituto;
     }
 
     // Constructor para mensajes congelados (Privados o Públicos)
@@ -105,5 +125,21 @@ public class Mensaje {
 
     public void setDestinatario(String destinatario) {
         this.destinatario = destinatario;
+    }
+
+    public LocalDateTime getFechaCaducidad() {
+        return fechaCaducidad;
+    }
+
+    public void setFechaCaducidad(LocalDateTime fechaCaducidad) {
+        this.fechaCaducidad = fechaCaducidad;
+    }
+
+    public String getTextoSustituto() {
+        return textoSustituto;
+    }
+
+    public void setTextoSustituto(String textoSustituto) {
+        this.textoSustituto = textoSustituto;
     }
 }
