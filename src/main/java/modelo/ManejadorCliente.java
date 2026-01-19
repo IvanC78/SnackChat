@@ -116,6 +116,8 @@ public class ManejadorCliente implements Runnable {
                 fechaVisible = fechaVisible.plusDays(cantidad);
             } else if (tiempoStr.endsWith("h")) {
                 fechaVisible = fechaVisible.plusHours(cantidad);
+            } else if (tiempoStr.endsWith("s")) {
+                fechaVisible = fechaVisible.plusSeconds(cantidad);
             } else {
                 fechaVisible = fechaVisible.plusMinutes(cantidad);
             }
