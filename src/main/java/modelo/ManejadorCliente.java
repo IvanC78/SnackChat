@@ -1,57 +1,90 @@
 package modelo;
 
+import modelo.Mensaje;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+
+import controlador.Server;
+
 import java.io.*;
 import java.net.*;
-import java.util.List;
 
 public class ManejadorCliente implements Runnable {
     private Socket socket;
-    private List<PrintWriter> clientes;
     private PrintWriter out;
+    private String nombreUsuario;
 
-    public ManejadorCliente(Socket socket, List<PrintWriter> clientes) {
+    public ManejadorCliente(Socket socket) {
         this.socket = socket;
-        this.clientes = clientes;
+    }
+
+    public void enviarMensaje(String msg) {
+        if (out != null) out.println(msg);
     }
 
     @Override
     public void run() {
-        try {
-            // Configuramos la entrada y salida para ESTE cliente concreto
-            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        try (BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
             out = new PrintWriter(socket.getOutputStream(), true);
 
-            // Agregamos este cliente al chat global para que reciba mensajes
-            clientes.add(out);
+            // Registro inicial: El primer mensaje del cliente es su nombre
+            this.nombreUsuario = in.readLine();
+            Server.mapaClientes.put(nombreUsuario, this);
+            //broadcast("SISTEMA: " + nombreUsuario + " se ha unido al chat.");  FRONTEND LUZ VERDE CONECTADO
 
-            String mensaje;
-            // Bucle que escucha mensajes de ESTE cliente
-            while ((mensaje = in.readLine()) != null) {
-                System.out.println("Mensaje recibido: " + mensaje);
-                retransmitir(mensaje);
+            String msg;
+            while ((msg = in.readLine()) != null) {
+                if (msg.startsWith("@")) {
+                    enviarPrivado(msg);
+                } else {
+                    // Guardar en MySQL
+                    guardarEnBD(nombreUsuario, msg);
+                    // Retransmitir a todos
+                    broadcast(nombreUsuario + ": " + msg);
+                }
             }
         } catch (IOException e) {
-            System.out.println("Un cliente ha abandonado el chat.");
+            System.out.println("Conexión perdida con " + nombreUsuario);
         } finally {
-            // Cuando el cliente se desconecta, lo quitamos de la lista y cerramos socket
-            if (out != null) {
-                clientes.remove(out);
+            if (nombreUsuario != null) {
+                Server.mapaClientes.remove(nombreUsuario);
+                //broadcast("SISTEMA: " + nombreUsuario + " ha salido.");  FRONTEND LUZ ROJA DESCONECTADO
             }
-            try {
-                socket.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+            try { socket.close(); } catch (IOException e) {}
+        }
+    }
+
+    private void guardarEnBD(String emisor, String texto) {
+        // Usamos la fábrica estática del Server
+        try (Session session = Server.sessionFactory.openSession()) {
+            Transaction t = session.beginTransaction();
+            session.persist(new Mensaje(emisor, texto));
+            t.commit();
+            System.out.println("[DB] Mensaje de " + emisor + " guardado.");
+        } catch (Exception e) {
+            System.err.println("[Error DB] No se pudo guardar: " + e.getMessage());
+        }
+    }
+
+    private void enviarPrivado(String msgCompleto) {
+        int primerEspacio = msgCompleto.indexOf(" ");
+        if (primerEspacio != -1) {
+            String destino = msgCompleto.substring(1, primerEspacio);
+            String contenido = msgCompleto.substring(primerEspacio + 1);
+
+            ManejadorCliente receptor = Server.mapaClientes.get(destino);
+            if (receptor != null) {
+                receptor.enviarMensaje("(Privado de " + nombreUsuario + "): " + contenido);
+                this.enviarMensaje("(Privado para " + destino + "): " + contenido);
+            } else {
+                this.enviarMensaje("SISTEMA: Usuario " + destino + " no encontrado.");
             }
         }
     }
 
-    // Método para enviar el mensaje a todos los clientes conectados
-    private void retransmitir(String mensaje) {
-        synchronized (clientes) {               // synchronized gestionar los mensajes simultáneos, genera concurrencia, comparten mismo recurso pero no se pisan
-            for (PrintWriter cliente : clientes) {
-                cliente.println(mensaje);
-            }
+    private void broadcast(String mensaje) {
+        for (ManejadorCliente c : Server.mapaClientes.values()) {
+            c.enviarMensaje(mensaje);
         }
     }
 }
-
