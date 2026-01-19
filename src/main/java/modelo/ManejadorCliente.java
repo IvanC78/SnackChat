@@ -103,7 +103,7 @@ public class ManejadorCliente implements Runnable {
         try {
             String[] partes = msg.split(" ", 3);
             if (partes.length < 3) {
-                enviarMensaje("SISTEMA: Uso incorrecto. Ejemplo: /congelar 10m Hola");
+                enviarMensaje("SISTEMA: Uso incorrecto. Ejemplo: /congelar 10m Hola (o /freeze 10m Hola)");
                 return;
             }
 
