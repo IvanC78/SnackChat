@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 public class Client {
     public static void main(String[] args) {
-        final String IP_SERVIDOR = "localhost"; // Cambia a la IP del servidor si no es local
+        final String IP_SERVIDOR = "192.168.72.47"; // Cambia a la IP del servidor si no es local
         final int PUERTO = 5000;
 
         try (Socket socket = new Socket(IP_SERVIDOR, PUERTO)) {
