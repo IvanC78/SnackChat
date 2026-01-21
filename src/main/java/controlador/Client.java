@@ -6,10 +6,17 @@ import java.util.Scanner;
 
 public class Client {
     public static void main(String[] args) {
-        final String IP_SERVIDOR = "192.168.72.47"; // Cambia a la IP del servidor si no es local
         final int PUERTO = 5000;
 
-        try (Socket socket = new Socket(IP_SERVIDOR, PUERTO)) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Introduce la IP del servidor: ");
+        String ipServidor = sc.nextLine();
+
+        if (ipServidor.isEmpty()) {
+            ipServidor = "localhost";
+        }
+
+        try (Socket socket = new Socket(ipServidor, PUERTO)) {
             System.out.println("Conectado al chat. Escribe 'chau' para salir.");
 
             PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())),
@@ -29,7 +36,7 @@ public class Client {
                 }
             });
             System.out.print("Añade de tu nombre: ");
-            Scanner sc = new Scanner(System.in);
+
             String nombreUsuario = sc.nextLine();
             out.println(nombreUsuario);
             System.out.print("> "); // Prompt visual

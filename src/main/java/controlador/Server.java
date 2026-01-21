@@ -24,6 +24,19 @@ public class Server {
         final int PUERTO = 5000;
 
         try {
+            // Mostrar IP local
+            System.out.println("------------------------------------------------");
+            System.out.println("IPs disponibles en este servidor:");
+            for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
+                NetworkInterface intf = en.nextElement();
+                for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
+                    InetAddress inetAddress = enumIpAddr.nextElement();
+                    if (!inetAddress.isLoopbackAddress() && inetAddress instanceof Inet4Address) {
+                        System.out.println(" -> " + inetAddress.getHostAddress());
+                    }
+                }
+            }
+            System.out.println("------------------------------------------------");
             // 1. Inicializar Hibernate
             System.out.println("Conectando a la base de datos...");
             sessionFactory = new Configuration().configure().buildSessionFactory();
