@@ -98,7 +98,8 @@ public class Server {
             }, 0, 10, java.util.concurrent.TimeUnit.SECONDS);
 
             // 3. Iniciar Servidor de Sockets
-            try (ServerSocket servidor = new ServerSocket(PUERTO)) {
+            try (ServerSocket servidor = new ServerSocket()) {
+                servidor.bind(new InetSocketAddress("0.0.0.0", PUERTO));
                 System.out.println(">>> Servidor Multichat iniciado en puerto " + PUERTO);
 
                 while (true) {
