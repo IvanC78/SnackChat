@@ -40,6 +40,7 @@
         <!-- Clases anotadas -->
 
         <mapping class="modelo.Mensaje"/>
+        <mapping class="modelo.Usuario"/>
 
     </session-factory>
 

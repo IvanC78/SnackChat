@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Text?>
 
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="500.0" styleClass="root" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="500.0" styleClass="root" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controlador.ControladorLogin">
   
   <stylesheets>
     <URL value="@style.css" />
@@ -34,11 +34,11 @@
       <Text styleClass="header-text" text="SnackChat" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
       
       <Text text="Usuario" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-      <TextField fx:id="textFieldUsuario" promptText="Escribe tu nombre de usuario..." GridPane.columnIndex="1" GridPane.rowIndex="2" />
+      <TextField fx:id="nombre" promptText="Escribe tu nombre de usuario..." GridPane.columnIndex="1" GridPane.rowIndex="2" />
       
       <Text text="Contraseña" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-      <PasswordField fx:id="passwordFieldContrasenia" promptText="Tu clave secreta..." GridPane.columnIndex="1" GridPane.rowIndex="4" />
+      <PasswordField fx:id="contrasenya" promptText="Tu clave secreta..." GridPane.columnIndex="1" GridPane.rowIndex="4" />
       
-      <Button fx:id="buttonLogIn" prefHeight="45.0" prefWidth="200.0" text="EMPEZAR A CHATEAR" textFill="#151515" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="5" />
+      <Button fx:id="login" onAction="#login" prefHeight="45.0" prefWidth="200.0" text="EMPEZAR A CHATEAR" textFill="#151515" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="5" />
    </children>
 </GridPane>

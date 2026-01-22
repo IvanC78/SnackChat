@@ -11,7 +11,7 @@ import jakarta.persistence.*;
 	    private Long id;
 
 	    @Column(nullable = false, columnDefinition = "TEXT")
-	    private String nombreUsuario;
+	    private String nombre;
 
 	    @Column(nullable = false, columnDefinition = "TEXT")
 	    private String contrasenya;
@@ -22,8 +22,8 @@ import jakarta.persistence.*;
 
 	    public Usuario() {} //Constructor vacío obligatorio que pide Hibernate
 
-	    public Usuario(String nombreUsuario, String contrasenya, boolean admin) {
-	        this.nombreUsuario = nombreUsuario;
+	    public Usuario(String nombre, String contrasenya, boolean admin) {
+	        this.nombre = nombre;
 	        this.contrasenya = contrasenya;
 	        this.admin = admin;
 	        // si da tiempo, añadir hora para saber a que hora se ha logueado la people
@@ -39,11 +39,11 @@ import jakarta.persistence.*;
 		}
 
 		public String getNombreUsuario() {
-			return nombreUsuario;
+			return nombre;
 		}
 
-		public void setNombreUsuario(String nombreUsuario) {
-			this.nombreUsuario = nombreUsuario;
+		public void setNombreUsuario(String nombre) {
+			this.nombre = nombre;
 		}
 
 		public String getContrasenya() {
