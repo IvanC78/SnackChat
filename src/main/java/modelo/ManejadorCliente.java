@@ -13,6 +13,8 @@ public class ManejadorCliente implements Runnable {
     private Socket socket;
     private PrintWriter out;
     private String nombreUsuario;
+    private boolean priv=false;
+    private ManejadorCliente receptor;
 
     public ManejadorCliente(Socket socket) {
         this.socket = socket;
@@ -35,7 +37,19 @@ public class ManejadorCliente implements Runnable {
             String msg;
             while ((msg = in.readLine()) != null) {
                 if (msg.startsWith("@")) {
-                    enviarPrivado(msg);
+                	String privado = msg.substring(1, msg.length());
+                	receptor = Server.mapaClientes.get(privado);
+                	if(receptor!=null) {
+                		this.enviarMensaje("Entrado en privado con " + privado);
+                		priv = true;
+                	} else if (privado.equals("all")) {
+                        this.enviarMensaje("Entrado en Broadcast");
+                        priv=false;
+                	} else {
+                		this.enviarMensaje("Usuario " + privado + " no encontrado");
+                	}
+                } else if(priv) {
+                	enviarPrivado(msg);
                 } else {
                     // Guardar en MySQL
                     guardarEnBD(nombreUsuario, msg);
@@ -67,19 +81,9 @@ public class ManejadorCliente implements Runnable {
     }
 
     private void enviarPrivado(String msgCompleto) {
-        int primerEspacio = msgCompleto.indexOf(" ");
-        if (primerEspacio != -1) {
-            String destino = msgCompleto.substring(1, primerEspacio);
-            String contenido = msgCompleto.substring(primerEspacio + 1);
-
-            ManejadorCliente receptor = Server.mapaClientes.get(destino);
-            if (receptor != null) {
-                receptor.enviarMensaje("(Privado de " + nombreUsuario + "): " + contenido);
-                this.enviarMensaje("(Privado para " + destino + "): " + contenido);
-            } else {
-                this.enviarMensaje("SISTEMA: Usuario " + destino + " no encontrado.");
-            }
-        }
+        receptor.enviarMensaje("(Privado de " + nombreUsuario + "): " + msgCompleto);
+        this.enviarMensaje("(Privado para " + receptor + "): " + msgCompleto);
+        
     }
 
     private void broadcast(String mensaje) {
