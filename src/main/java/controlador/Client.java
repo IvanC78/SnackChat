@@ -6,15 +6,22 @@ import java.util.Scanner;
 
 public class Client {
     public static void main(String[] args) {
-        final String IP_SERVIDOR = "DAM2-22"; // Cambia a la IP del servidor si no es local
-        final int PUERTO = 5000;
-        
-        
 
-        try (Socket socket = new Socket(IP_SERVIDOR, PUERTO)) {
+        final int PUERTO = 5000;
+
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Introduce la IP del servidor: ");
+        String ipServidor = sc.nextLine();
+
+        if (ipServidor.isEmpty()) {
+            ipServidor = "localhost";
+        }
+
+        try (Socket socket = new Socket(ipServidor, PUERTO)) {
             System.out.println("Conectado al chat. Escribe 'chau' para salir.");
 
-            PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
+            PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())),
+                    true);
             BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
             // Hilo para RECIBIR mensajes del servidor
@@ -26,11 +33,11 @@ public class Client {
                         System.out.print("> "); // Prompt visual
                     }
                 } catch (IOException e) {
-                	System.out.println("Conexión cerrada.");
+                    System.out.println("Conexión cerrada.");
                 }
             });
             System.out.print("Añade de tu nombre: ");
-            Scanner sc = new Scanner(System.in);
+
             String nombreUsuario = sc.nextLine();
             out.println(nombreUsuario);
             System.out.print("> "); // Prompt visual
@@ -39,13 +46,13 @@ public class Client {
             Thread enviar = new Thread(() -> {
                 try {
                     while (true) {
-                    	
+
                         String texto = sc.nextLine();
-//                        if (texto.equalsIgnoreCase("chau")) {
-//                            socket.close();
-//                            break;
-//                        }
-                        //out.println(nombreUsuario+": ");
+                        // if (texto.equalsIgnoreCase("chau")) {
+                        // socket.close();
+                        // break;
+                        // }
+                        // out.println(nombreUsuario+": ");
                         out.println(texto);
                     }
                 } catch (Exception e) {
@@ -57,12 +64,11 @@ public class Client {
             enviar.start();
 
             // Esperar a que el hilo de envío termine para cerrar el programa
+            // Esperar a que el hilo de envío termine para cerrar el programa
             enviar.join();
+            sc.close();
         } catch (Exception e) {
             System.out.println("Error: No se pudo conectar al servidor.");
         }
     }
 }
-
-
-

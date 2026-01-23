@@ -24,6 +24,19 @@ public class Server {
         final int PUERTO = 5000;
 
         try {
+            // Mostrar IP local
+            System.out.println("------------------------------------------------");
+            System.out.println("IPs disponibles en este servidor:");
+            for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
+                NetworkInterface intf = en.nextElement();
+                for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
+                    InetAddress inetAddress = enumIpAddr.nextElement();
+                    if (!inetAddress.isLoopbackAddress() && inetAddress instanceof Inet4Address) {
+                        System.out.println(" -> " + inetAddress.getHostAddress());
+                    }
+                }
+            }
+            System.out.println("------------------------------------------------");
             // 1. Inicializar Hibernate
             iniciarHibernate();
 
@@ -62,14 +75,29 @@ public class Server {
                         session.merge(m);
                     }
 
+                    // 2. Mensajes Quemados (New)
+                    List<modelo.Mensaje> mensajesQuemados = session.createQuery(
+                            "FROM Mensaje m WHERE m.fechaCaducidad <= :now AND m.contenido != m.textoSustituto",
+                            modelo.Mensaje.class)
+                            .setParameter("now", LocalDateTime.now())
+                            .list();
+
+                    for (modelo.Mensaje m : mensajesQuemados) {
+                        if (m.getTextoSustituto() != null) {
+                            m.setContenido(m.getTextoSustituto());
+                            session.merge(m);
+                        }
+                    }
+
                     t.commit();
                 } catch (Exception e) {
-                    System.err.println("Error procesando mensajes congelados: " + e.getMessage());
+                    System.err.println("Error procesando mensajes: " + e.getMessage());
                 }
             }, 0, 10, java.util.concurrent.TimeUnit.SECONDS);
 
             // 3. Iniciar Servidor de Sockets
-            try (ServerSocket servidor = new ServerSocket(PUERTO)) {
+            try (ServerSocket servidor = new ServerSocket()) {
+                servidor.bind(new InetSocketAddress("0.0.0.0", PUERTO));
                 System.out.println(">>> Servidor Multichat iniciado en puerto " + PUERTO);
 
                 while (true) {
