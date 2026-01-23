@@ -25,9 +25,7 @@ public class Server {
 
         try {
             // 1. Inicializar Hibernate
-            System.out.println("Conectando a la base de datos...");
-            sessionFactory = new Configuration().configure().buildSessionFactory();
-            System.out.println("Base de datos conectada.");
+            iniciarHibernate();
 
             // 2. Iniciar Servicio de Mensajes Congelados
             java.util.concurrent.ScheduledExecutorService scheduler = java.util.concurrent.Executors
@@ -86,5 +84,11 @@ public class Server {
             System.err.println("Error crítico en el servidor: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+    
+    public static void iniciarHibernate() {
+    	System.out.println("Conectando a la base de datos...");
+        sessionFactory = new Configuration().configure().buildSessionFactory();
+        System.out.println("Base de datos conectada.");
     }
 }
