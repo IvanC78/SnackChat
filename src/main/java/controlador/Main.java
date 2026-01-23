@@ -27,6 +27,7 @@ public class Main extends Application {
 	public static void main(String[] args) {
 		try {
 			Server.iniciarHibernate();
+			Server.iniciarPlanificador();
 
 			// Solo guardamos si NO existe ya
 			if (UsuarioDAO.buscarPorNombre("snackchat") == null) {

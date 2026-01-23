@@ -41,59 +41,7 @@ public class Server {
             iniciarHibernate();
 
             // 2. Iniciar Servicio de Mensajes Congelados
-            java.util.concurrent.ScheduledExecutorService scheduler = java.util.concurrent.Executors
-                    .newScheduledThreadPool(1);
-            scheduler.scheduleAtFixedRate(() -> {
-                try (Session session = sessionFactory.openSession()) {
-                    Transaction t = session.beginTransaction();
-
-                    List<modelo.Mensaje> mensajes = session.createQuery(
-                            "FROM Mensaje m WHERE m.enviado = false AND m.fechaVisible <= :now", modelo.Mensaje.class)
-                            .setParameter("now", LocalDateTime.now())
-                            .list();
-
-                    for (modelo.Mensaje m : mensajes) {
-                        String contenidoMostrar = "🔓 " + m.getEmisor() + " (Frozen): " + m.getContenido();
-                        String dest = m.getDestinatario();
-
-                        if (dest != null) {
-                            // Privado
-                            ManejadorCliente receptor = mapaClientes.get(dest);
-                            ManejadorCliente emisor = mapaClientes.get(m.getEmisor());
-                            if (receptor != null)
-                                receptor.enviarMensaje(contenidoMostrar);
-                            if (emisor != null)
-                                emisor.enviarMensaje(contenidoMostrar + " (entregado a " + dest + ")");
-                        } else {
-                            // Público -> Broadcast
-                            for (ManejadorCliente c : mapaClientes.values()) {
-                                c.enviarMensaje(contenidoMostrar);
-                            }
-                        }
-
-                        m.setEnviado(true);
-                        session.merge(m);
-                    }
-
-                    // 2. Mensajes Quemados (New)
-                    List<modelo.Mensaje> mensajesQuemados = session.createQuery(
-                            "FROM Mensaje m WHERE m.fechaCaducidad <= :now AND m.contenido != m.textoSustituto",
-                            modelo.Mensaje.class)
-                            .setParameter("now", LocalDateTime.now())
-                            .list();
-
-                    for (modelo.Mensaje m : mensajesQuemados) {
-                        if (m.getTextoSustituto() != null) {
-                            m.setContenido(m.getTextoSustituto());
-                            session.merge(m);
-                        }
-                    }
-
-                    t.commit();
-                } catch (Exception e) {
-                    System.err.println("Error procesando mensajes: " + e.getMessage());
-                }
-            }, 0, 10, java.util.concurrent.TimeUnit.SECONDS);
+            iniciarPlanificador();
 
             // 3. Iniciar Servidor de Sockets
             try (ServerSocket servidor = new ServerSocket()) {
@@ -113,10 +61,67 @@ public class Server {
             e.printStackTrace();
         }
     }
-    
+
     public static void iniciarHibernate() {
-    	System.out.println("Conectando a la base de datos...");
+        System.out.println("Conectando a la base de datos...");
         sessionFactory = new Configuration().configure().buildSessionFactory();
         System.out.println("Base de datos conectada.");
+    }
+
+    public static void iniciarPlanificador() {
+        java.util.concurrent.ScheduledExecutorService scheduler = java.util.concurrent.Executors
+                .newScheduledThreadPool(1);
+        scheduler.scheduleAtFixedRate(() -> {
+            try (Session session = sessionFactory.openSession()) {
+                Transaction t = session.beginTransaction();
+
+                List<modelo.Mensaje> mensajes = session.createQuery(
+                        "FROM Mensaje m WHERE m.enviado = false AND m.fechaVisible <= :now", modelo.Mensaje.class)
+                        .setParameter("now", LocalDateTime.now())
+                        .list();
+
+                for (modelo.Mensaje m : mensajes) {
+                    String contenidoMostrar = "🔓 " + m.getEmisor() + " (Frozen): " + m.getContenido();
+                    String dest = m.getDestinatario();
+
+                    if (dest != null) {
+                        // Privado
+                        ManejadorCliente receptor = mapaClientes.get(dest);
+                        ManejadorCliente emisor = mapaClientes.get(m.getEmisor());
+                        if (receptor != null)
+                            receptor.enviarMensaje(contenidoMostrar);
+                        if (emisor != null)
+                            emisor.enviarMensaje(contenidoMostrar + " (entregado a " + dest + ")");
+                    } else {
+                        // Público -> Broadcast
+                        for (ManejadorCliente c : mapaClientes.values()) {
+                            c.enviarMensaje(contenidoMostrar);
+                        }
+                    }
+
+                    m.setEnviado(true);
+                    session.merge(m);
+                }
+
+                // 2. Mensajes Quemados (New)
+                List<modelo.Mensaje> mensajesQuemados = session.createQuery(
+                        "FROM Mensaje m WHERE m.fechaCaducidad <= :now AND m.contenido != m.textoSustituto",
+                        modelo.Mensaje.class)
+                        .setParameter("now", LocalDateTime.now())
+                        .list();
+
+                for (modelo.Mensaje m : mensajesQuemados) {
+                    if (m.getTextoSustituto() != null) {
+                        m.setContenido(m.getTextoSustituto());
+                        session.merge(m);
+                    }
+                }
+
+                t.commit();
+            } catch (Exception e) {
+                System.err.println("Error procesando mensajes: " + e.getMessage());
+            }
+        }, 0, 10, java.util.concurrent.TimeUnit.SECONDS);
+        System.out.println("Planificador de mensajes congelados/quemados iniciado.");
     }
 }
