@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+
+<hibernate-configuration>
+    <session-factory>
+
+        <!-- Datos de conexión -->
+
+        <property name="hibernate.connection.driver_class">com.mysql.cj.jdbc.Driver</property>
+
+        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/snackchat?useSSL=false&amp;allowPublicKeyRetrieval=true&amp;serverTimezone=UTC</property>
+
+
+        <!-- Usuario SIN contraseña -->
+
+        <property name="hibernate.connection.username">root</property>
+
+        <property name="hibernate.connection.password">root</property>
+
+
+
+		<!-- Dialecto correcto para MySQL 8 -->
+
+		<property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+
+
+        <!-- Logs de SQL en consola -->
+
+        <property name="hibernate.show_sql">false</property>
+
+
+
+        <!-- Crear/actualizar tablas automáticamente -->
+
+		<property name="hibernate.hbm2ddl.auto">update</property>
+
+
+
+        <!-- Clases anotadas -->
+
+        <mapping class="modelo.Mensaje"/>
+        <mapping class="modelo.Usuario"/>
+
+    </session-factory>
+
+
+</hibernate-configuration>
