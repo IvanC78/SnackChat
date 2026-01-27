@@ -31,11 +31,7 @@ public class ControladorRegistro {
 	private TextField telefono;
 	@FXML
 	private Button registrarse;
-	@FXML
-	private Pane panel;
-	private Parent root;
-	private Stage stage;
-	private Scene scene;
+	
 	
 	
 	Alert alerta = new Alert(Alert.AlertType.WARNING);
@@ -57,7 +53,6 @@ public class ControladorRegistro {
 			return;
 		}
 		
-		System.out.println(contrasenyaS +" "+contrasenyaS);
 		if(!contrasenyaS.equals(contrasenya2S)) {
 			alerta.setHeaderText("ÑAM");
 			alerta.setContentText("¡Las contraseñas deben coincidir!");
@@ -86,7 +81,7 @@ public class ControladorRegistro {
 	
 	public boolean telefonoEsNumerico(String telefonoS) {
 		try {
-			Integer.parseInt(telefonoS);
+			Long.parseLong(telefonoS);
 			return true;
 		}catch(NumberFormatException e) {
 			alerta.setHeaderText("ÑAM");

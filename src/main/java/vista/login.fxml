@@ -33,8 +33,8 @@
    <children>
       <Text styleClass="header-text" text="SnackChat" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
       
-      <Text text="Usuario" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-      <TextField fx:id="nombre" promptText="Escribe tu nombre de usuario..." GridPane.columnIndex="1" GridPane.rowIndex="2" />
+      <Text text="Teléfono" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+      <TextField fx:id="telefono" promptText="Escribe tu nombre de usuario..." GridPane.columnIndex="1" GridPane.rowIndex="2" />
       
       <Text text="Contraseña" GridPane.columnIndex="1" GridPane.rowIndex="3" />
       <PasswordField fx:id="contrasenya" promptText="Tu clave secreta..." GridPane.columnIndex="1" GridPane.rowIndex="4" />

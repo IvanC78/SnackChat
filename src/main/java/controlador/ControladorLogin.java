@@ -25,7 +25,7 @@ public class ControladorLogin {
 	@FXML
 	private Button login;
 	@FXML
-	private TextField nombre;
+	private TextField telefono;
 	@FXML
 	private TextField contrasenya;
 	@FXML
@@ -55,11 +55,11 @@ public class ControladorLogin {
 	
 	@FXML
 	public void login(ActionEvent event) throws IOException {
-		String nombreS = nombre.getText();
+		String telefonoS = telefono.getText();
 		String contrasenyaS = contrasenya.getText();
 		
-		Usuario usuario = ServicioLogin.validarLogin(nombreS, contrasenyaS);
-		if(nombreS.isEmpty()) {
+		Usuario usuario = ServicioLogin.validarLogin(telefonoS, contrasenyaS);
+		if(telefonoS.isEmpty()) {
 			alerta.setHeaderText("ÑAM");
 			alerta.setContentText("Debes introducir un nombre de usuario");
 			alerta.showAndWait();

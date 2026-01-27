@@ -4,9 +4,9 @@ import seguridad.Seguridad;
 
 public class ServicioLogin {
 	
-	public static Usuario validarLogin(String nombre, String constrasenya) {
+	public static Usuario validarLogin(String telefono, String constrasenya) {
 		
-		Usuario usuario = UsuarioDAO.buscarPorNombre(nombre);
+		Usuario usuario = UsuarioDAO.buscarPorTelefono(telefono);
 		if (usuario == null) {
 			return null;
 		}
