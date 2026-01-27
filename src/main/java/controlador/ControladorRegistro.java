@@ -10,6 +10,8 @@ import javafx.scene.control.ColorPicker;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
+import javafx.stage.Stage;
+import modelo.ServicioRegistro;
 
 public class ControladorRegistro {
 
@@ -26,8 +28,10 @@ public class ControladorRegistro {
 	@FXML
 	private Button registrarse;
 	
+	
 	Alert alerta = new Alert(Alert.AlertType.WARNING);
 	Alert alertaError = new Alert(Alert.AlertType.ERROR);
+	Alert alertaCorrecta = new Alert(Alert.AlertType.CONFIRMATION);
 	
 	@FXML
 	public void registro(ActionEvent event) throws IOException{
@@ -53,7 +57,15 @@ public class ControladorRegistro {
 		}
 		
 		telefonoEsNumerico(telefonoS);
-		//Hay que terminar que el telefono debe tener 9 digitos.
+		telefonoEsValido(telefonoS);
+		
+		ServicioRegistro.registrar(usuarioS, contrasenyaS, telefonoS, colorC.toString());
+		alertaCorrecta.setHeaderText("Registro completado"); 
+		alertaCorrecta.setContentText("Usuario registrado correctamente"); 
+		alertaCorrecta.showAndWait();
+		// HAY QUE HACER QUE LA PESTAÑA SE CIERRE CUANDO LE DAS A ACEPTAR
+		
+		
 	}
 	
 	public boolean telefonoEsNumerico(String telefonoS) {
@@ -67,5 +79,21 @@ public class ControladorRegistro {
 			return false;
 		}
 	}
+	
+	public boolean telefonoEsValido(String telefonoS) {
+	    if (!telefonoEsNumerico(telefonoS)) {
+	        return false;
+	    }
+
+	    if (telefonoS.length() != 9) {
+	        alerta.setHeaderText("ÑAM");
+	        alerta.setContentText("¡El teléfono debe tener 9 dígitos!");
+	        alerta.showAndWait();
+	        return false;
+	    }
+
+	    return true;
+	}
+
 	
 }

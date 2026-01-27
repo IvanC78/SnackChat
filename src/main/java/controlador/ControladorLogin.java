@@ -87,6 +87,7 @@ public class ControladorLogin {
 			scene = new Scene(root);
 			stage.setScene(scene);
 			stage.show();
+			
 			}else {
 				FXMLLoader loader = new FXMLLoader(getClass().getResource("../vista/listadoDeChat.fxml"));
 				root = loader.load();

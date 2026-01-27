@@ -15,6 +15,13 @@ import jakarta.persistence.*;
 
 	    @Column(nullable = false, columnDefinition = "TEXT")
 	    private String contrasenya;
+	    
+	    @Column(nullable = false, unique = true, length = 9) 
+	    private String telefono; 
+	    
+	    @Column(nullable = false, columnDefinition = "TEXT") 
+	    private String color;
+	    
 
 	    // falta definir como será admin o usuario normal
 	    @Column(nullable = false)
@@ -22,9 +29,11 @@ import jakarta.persistence.*;
 
 	    public Usuario() {} //Constructor vacío obligatorio que pide Hibernate
 
-	    public Usuario(String nombre, String contrasenya, boolean admin) {
+	    public Usuario(String nombre, String contrasenya, String telefono, String color, boolean admin) {
 	        this.nombre = nombre;
 	        this.contrasenya = contrasenya;
+	        this.telefono = telefono;
+	        this.color = color;
 	        this.admin = admin;
 	        // si da tiempo, añadir hora para saber a que hora se ha logueado la people
 	    }
@@ -60,6 +69,22 @@ import jakarta.persistence.*;
 
 		public void setAdmin(boolean admin) {
 			this.admin = admin;
+		}
+
+		public String getTelefono() {
+			return telefono;
+		}
+
+		public void setTelefono(String telefono) {
+			this.telefono = telefono;
+		}
+
+		public String getColor() {
+			return color;
+		}
+
+		public void setColor(String color) {
+			this.color = color;
 		}
 		
 	}

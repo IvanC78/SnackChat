@@ -30,4 +30,18 @@ public class UsuarioDAO {
 		sesion.getTransaction().commit();
 		sesion.close();
 	}
+	
+	public static Usuario buscarPorTelefono(String telefono) {
+	    Session session = Server.sessionFactory.openSession();
+	    try {
+	        String hql = "FROM Usuario WHERE telefono = :t";
+	        return session.createQuery(hql, Usuario.class)
+	                      .setParameter("t", telefono)
+	                      .setMaxResults(1)
+	                      .uniqueResult();
+	    } finally {
+	        session.close();
+	    }
+	}
+
 }
