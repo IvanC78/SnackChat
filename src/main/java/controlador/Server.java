@@ -100,6 +100,10 @@ public class Server {
                 servidor.bind(new InetSocketAddress("0.0.0.0", PUERTO));
                 System.out.println(">>> Servidor Multichat iniciado en puerto " + PUERTO);
 
+                // 3. Iniciar Monitor de Mensajes Congelados
+                new Thread(new servicios.MonitorMensajes()).start();
+                System.out.println(">>> Monitor de mensajes congelados activo.");
+
                 while (true) {
                     Socket socket = servidor.accept();
                     System.out.println("Nueva conexión desde: " + socket.getInetAddress());
@@ -113,9 +117,9 @@ public class Server {
             e.printStackTrace();
         }
     }
-    
+
     public static void iniciarHibernate() {
-    	System.out.println("Conectando a la base de datos...");
+        System.out.println("Conectando a la base de datos...");
         sessionFactory = new Configuration().configure().buildSessionFactory();
         System.out.println("Base de datos conectada.");
     }

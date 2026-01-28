@@ -22,17 +22,17 @@ public class Mensaje {
     @Column(name = "fecha_visible")
     private LocalDateTime fechaVisible;
 
-    @Column(nullable = false)
-    private boolean enviado = true;
-
-    @Column(name = "destinatario")
-    private String destinatario; // Null for public messages
-
     @Column(name = "fecha_caducidad")
     private LocalDateTime fechaCaducidad;
 
     @Column(name = "texto_sustituto")
-    private String textoSustituto; // "Quemado" o "Burned"
+    private String textoSustituto;
+
+    @Column(name = "destinatario")
+    private String destinatario;
+
+    @Column(nullable = false)
+    private boolean enviado = true;
 
     public Mensaje() {
     } // Constructor vacío obligatorio que pide Hibernate
@@ -42,32 +42,27 @@ public class Mensaje {
         this.emisor = emisor;
         this.contenido = contenido;
         this.fechaEnvio = LocalDateTime.now();
-        this.fechaVisible = LocalDateTime.now();
         this.enviado = true;
     }
 
-    // Constructor para mensajes quemados: (emisor, contenido, textoSustituto,
-    // fechaCaducidad)
-    // Nota: Cambiamos el orden para evitar colisión con el constructor de
-    // congelados
-    public Mensaje(String emisor, String contenido, String textoSustituto, LocalDateTime fechaCaducidad) {
-        this.emisor = emisor;
-        this.contenido = contenido;
-        this.fechaEnvio = LocalDateTime.now();
-        this.fechaVisible = LocalDateTime.now();
-        this.enviado = true;
-        this.fechaCaducidad = fechaCaducidad;
-        this.textoSustituto = textoSustituto;
-    }
-
-    // Constructor para mensajes congelados (Privados o Públicos)
+    // Constructor para mensajes CONGELADOS
     public Mensaje(String emisor, String contenido, LocalDateTime fechaVisible, String destinatario) {
         this.emisor = emisor;
         this.contenido = contenido;
         this.fechaEnvio = LocalDateTime.now();
         this.fechaVisible = fechaVisible;
-        this.enviado = false;
         this.destinatario = destinatario;
+        this.enviado = false; // No se envía inmediatamente
+    }
+
+    // Constructor para mensajes QUEMADOS (Burn)
+    public Mensaje(String emisor, String contenido, String textoSustituto, LocalDateTime fechaCaducidad) {
+        this.emisor = emisor;
+        this.contenido = contenido;
+        this.fechaEnvio = LocalDateTime.now();
+        this.textoSustituto = textoSustituto;
+        this.fechaCaducidad = fechaCaducidad;
+        this.enviado = true; // Se envía inmediatamente (se quema después)
     }
 
     // Getters y Setters
@@ -111,22 +106,6 @@ public class Mensaje {
         this.fechaVisible = fechaVisible;
     }
 
-    public boolean isEnviado() {
-        return enviado;
-    }
-
-    public void setEnviado(boolean enviado) {
-        this.enviado = enviado;
-    }
-
-    public String getDestinatario() {
-        return destinatario;
-    }
-
-    public void setDestinatario(String destinatario) {
-        this.destinatario = destinatario;
-    }
-
     public LocalDateTime getFechaCaducidad() {
         return fechaCaducidad;
     }
@@ -141,5 +120,21 @@ public class Mensaje {
 
     public void setTextoSustituto(String textoSustituto) {
         this.textoSustituto = textoSustituto;
+    }
+
+    public String getDestinatario() {
+        return destinatario;
+    }
+
+    public void setDestinatario(String destinatario) {
+        this.destinatario = destinatario;
+    }
+
+    public boolean isEnviado() {
+        return enviado;
+    }
+
+    public void setEnviado(boolean enviado) {
+        this.enviado = enviado;
     }
 }
