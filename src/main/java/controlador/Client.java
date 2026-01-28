@@ -6,13 +6,12 @@ import java.util.Scanner;
 
 public class Client {
     public static void main(String[] args) {
-        final String IP_SERVIDOR = "DAM2-22"; // Cambia a la IP del servidor si no es local
+        final String HOSTNAME = "LAPTOP-POLO"; // Cambia a el hostname del servidor 
         final int PUERTO = 5000;
         
         
 
-        try (Socket socket = new Socket(IP_SERVIDOR, PUERTO)) {
-            System.out.println("Conectado al chat. Escribe 'chau' para salir.");
+        try (Socket socket = new Socket(HOSTNAME, PUERTO)) {
 
             PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
             BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
