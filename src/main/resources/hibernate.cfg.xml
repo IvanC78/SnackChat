@@ -27,7 +27,7 @@
 
         <!-- Logs de SQL en consola -->
 
-        <property name="hibernate.show_sql">true</property>
+        <property name="hibernate.show_sql">false</property>
 
 
 

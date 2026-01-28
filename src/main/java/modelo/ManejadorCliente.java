@@ -1,6 +1,5 @@
 package modelo;
 
-import modelo.Mensaje;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -19,7 +18,8 @@ public class ManejadorCliente implements Runnable {
     }
 
     public void enviarMensaje(String msg) {
-        if (out != null) out.println(msg);
+        if (out != null)
+            out.println(msg);
     }
 
     @Override
@@ -30,10 +30,16 @@ public class ManejadorCliente implements Runnable {
             // Registro inicial: El primer mensaje del cliente es su nombre
             this.nombreUsuario = in.readLine();
             Server.mapaClientes.put(nombreUsuario, this);
-            //broadcast("SISTEMA: " + nombreUsuario + " se ha unido al chat.");  FRONTEND LUZ VERDE CONECTADO
+            // broadcast("SISTEMA: " + nombreUsuario + " se ha unido al chat."); FRONTEND
+            // LUZ VERDE CONECTADO
 
             String msg;
             while ((msg = in.readLine()) != null) {
+                // PRIMERO: Intentar procesar como comando (/congelar, /quemar)
+                if (servicios.ProcesadorComandos.procesar(msg, this)) {
+                    continue; // Si fue un comando, no hacer nada más
+                }
+
                 if (msg.startsWith("@")) {
                     enviarPrivado(msg);
                 } else {
@@ -48,9 +54,13 @@ public class ManejadorCliente implements Runnable {
         } finally {
             if (nombreUsuario != null) {
                 Server.mapaClientes.remove(nombreUsuario);
-                //broadcast("SISTEMA: " + nombreUsuario + " ha salido.");  FRONTEND LUZ ROJA DESCONECTADO
+                // broadcast("SISTEMA: " + nombreUsuario + " ha salido."); FRONTEND LUZ ROJA
+                // DESCONECTADO
             }
-            try { socket.close(); } catch (IOException e) {}
+            try {
+                socket.close();
+            } catch (IOException e) {
+            }
         }
     }
 
@@ -86,5 +96,9 @@ public class ManejadorCliente implements Runnable {
         for (ManejadorCliente c : Server.mapaClientes.values()) {
             c.enviarMensaje(mensaje);
         }
+    }
+
+    public String getNombreUsuario() {
+        return nombreUsuario;
     }
 }

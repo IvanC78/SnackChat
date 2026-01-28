@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 public class Client {
     public static void main(String[] args) {
-        final String IP_SERVIDOR = "DAM2-22"; // Cambia a la IP del servidor si no es local
+        final String IP_SERVIDOR = "DAM2-10"; // Cambia a la IP del servidor si no es local
         final int PUERTO = 5000;
         
         

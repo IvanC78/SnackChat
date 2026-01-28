@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Server {
     // Mapa de clientes conectados
     public static Map<String, ManejadorCliente> mapaClientes = new ConcurrentHashMap<>();
-    
+
     // Fábrica de conexiones Hibernate (Opción A: Única y estática)
     public static SessionFactory sessionFactory;
 
@@ -27,10 +27,14 @@ public class Server {
             try (ServerSocket servidor = new ServerSocket(PUERTO)) {
                 System.out.println(">>> Servidor Multichat iniciado en puerto " + PUERTO);
 
+                // 3. Iniciar Monitor de Mensajes Congelados
+                new Thread(new servicios.MonitorMensajes()).start();
+                System.out.println(">>> Monitor de mensajes congelados activo.");
+
                 while (true) {
                     Socket socket = servidor.accept();
                     System.out.println("Nueva conexión desde: " + socket.getInetAddress());
-                    
+
                     // Iniciamos el hilo manejador
                     new Thread(new ManejadorCliente(socket)).start();
                 }
@@ -40,9 +44,9 @@ public class Server {
             e.printStackTrace();
         }
     }
-    
+
     public static void iniciarHibernate() {
-    	System.out.println("Conectando a la base de datos...");
+        System.out.println("Conectando a la base de datos...");
         sessionFactory = new Configuration().configure().buildSessionFactory();
         System.out.println("Base de datos conectada.");
     }
