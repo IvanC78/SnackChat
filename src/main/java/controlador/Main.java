@@ -33,7 +33,7 @@ public class Main extends Application {
 	        // Solo guardamos si NO existe ya
 	        if (UsuarioDAO.buscarPorNombre("snackchat") == null) {
 	            Usuario u = new Usuario();
-	            u.setNombreUsuario("snackchat");
+	            u.setNombre_usuario("snackchat");
 	            String passwordEncriptada = seguridad.Seguridad.hashPassword("1234");
 	            u.setContrasenya(passwordEncriptada);
 	            u.setAdmin(true);    
