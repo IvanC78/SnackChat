@@ -7,6 +7,15 @@ public class ServicioRegistro {
 	  	public static boolean telefonoDisponible(String telefono) {
 	        return UsuarioDAO.buscarPorTelefono(telefono) == null;
 	    }
+	  	
+	  	public static void registrar(String telefono,String contrasenya) {
+	        Usuario u = new Usuario();
+	        u.setContrasenya(Seguridad.hashPassword(contrasenya));
+	        u.setTelefono(telefono);
+
+
+	        UsuarioDAO.guardarUsuario(u);
+	    }
 
 	    public static void registrar(String nombre, String contrasenya, String telefono, String color) {
 	        Usuario u = new Usuario();

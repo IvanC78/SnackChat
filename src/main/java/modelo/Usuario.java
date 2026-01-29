@@ -10,7 +10,7 @@ import jakarta.persistence.*;
 	    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	    private Long id;
 
-	    @Column(nullable = false, columnDefinition = "TEXT")
+	    @Column(nullable = true, columnDefinition = "TEXT")
 	    private String nombre;
 
 	    @Column(nullable = false, columnDefinition = "TEXT")
@@ -19,7 +19,7 @@ import jakarta.persistence.*;
 	    @Column(nullable = false, unique = true, length = 9) 
 	    private String telefono; 
 	    
-	    @Column(nullable = false, columnDefinition = "TEXT") 
+	    @Column(nullable = true, columnDefinition = "TEXT") 
 	    private String color;
 	    
 

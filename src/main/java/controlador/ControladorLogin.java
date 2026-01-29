@@ -21,7 +21,7 @@ public class ControladorLogin {
 	
 	// LOGIN
 	@FXML
-	private TextField nombreLogin;
+	private TextField telefonoLogin;
 	@FXML
 	private PasswordField contrasenyaLogin;
 	@FXML
@@ -29,7 +29,7 @@ public class ControladorLogin {
 	
 	// REGISTRO
 	@FXML
-	private TextField nombreRegistro;
+	private TextField telefonoRegistro;
 	@FXML
 	private PasswordField contrasenyaRegistro;
 	@FXML
@@ -45,21 +45,21 @@ public class ControladorLogin {
 	// ========== MÉTODO LOGIN ==========
 	@FXML
 	public void login(ActionEvent event) throws IOException {
-		String nombreS = nombreLogin.getText().trim();
+		String telefonoS = telefonoLogin.getText().trim();
 		String contrasenyaS = contrasenyaLogin.getText();
 		
 		// Validar que no estén vacíos
-		if (nombreS.isEmpty() || contrasenyaS.isEmpty()) {
+		if (telefonoS.isEmpty() || contrasenyaS.isEmpty()) {
 			mostrarAlerta("Error", "Debes introducir usuario y contraseña", Alert.AlertType.WARNING);
 			return;
 		}
 		
 		// Validar contra la BD
-		Usuario usuario = ServicioLogin.validarLogin(nombreS, contrasenyaS);
+		Usuario usuario = ServicioLogin.validarLogin(telefonoS, contrasenyaS);
 		
 		if (usuario == null) {
-			mostrarAlerta("Error", "Usuario o contraseña incorrectos", Alert.AlertType.WARNING);
-			nombreLogin.clear();
+			mostrarAlerta("Error", "Telefono o contraseña incorrectos", Alert.AlertType.WARNING);
+			telefonoLogin.clear();
 			contrasenyaLogin.clear();
 			return;
 		}
@@ -76,17 +76,17 @@ public class ControladorLogin {
 	// ========== MÉTODO REGISTRO ==========
 	@FXML
 	public void registro(ActionEvent event) throws IOException {
-		String nombreS = nombreRegistro.getText().trim();
+		String telefonoS = telefonoRegistro.getText().trim();
 		String contrasenyaS = contrasenyaRegistro.getText();
 		
 		// Validar que no estén vacíos
-		if (nombreS.isEmpty() || contrasenyaS.isEmpty()) {
+		if (telefonoS.isEmpty() || contrasenyaS.isEmpty()) {
 			mostrarAlerta("Error", "Debes rellenar todos los campos", Alert.AlertType.WARNING);
 			return;
 		}
 		
 		// Validar longitud mínima
-		if (nombreS.length() < 3) {
+		if (telefonoS.length() < 3) {
 			mostrarAlerta("Error", "El nombre debe tener al menos 3 caracteres", Alert.AlertType.WARNING);
 			return;
 		}
@@ -96,17 +96,17 @@ public class ControladorLogin {
 			return;
 		}
 		
-		// Comprobar si el usuario ya existe
-		Usuario usuarioExistente = UsuarioDAO.buscarPorNombre(nombreS);
+		// Comprobar si el usuario ya existe || IMPORTATANTE HEMOS PUESTO TELEFONO EN VEZ DE NOMBRE
+		Usuario usuarioExistente = UsuarioDAO.buscarPorTelefono(telefonoS);
 		if (usuarioExistente != null) {
-			mostrarAlerta("Error", "Este nombre de usuario ya existe", Alert.AlertType.WARNING);
-			nombreRegistro.clear();
+			mostrarAlerta("Error", "Este telefono ya existe", Alert.AlertType.WARNING);
+			telefonoRegistro.clear();
 			return;
 		}
 		
 		// Crear nuevo usuario (siempre como usuario normal, no admin)
 		Usuario nuevoUsuario = new Usuario();
-		nuevoUsuario.setNombreUsuario(nombreS);
+		nuevoUsuario.setTelefono(telefonoS);
 		String passwordEncriptada = Seguridad.hashPassword(contrasenyaS);
 		nuevoUsuario.setContrasenya(passwordEncriptada);
 		nuevoUsuario.setAdmin(false); // Los nuevos registros son usuarios normales
@@ -116,10 +116,10 @@ public class ControladorLogin {
 			UsuarioDAO.guardarUsuario(nuevoUsuario);
 			mostrarAlerta("Éxito", "Cuenta creada correctamente. Inicia sesión ahora.", Alert.AlertType.INFORMATION);
 			
-			// Limpiar campos
-			nombreRegistro.clear();
+			// Limpiar campos | IMPORTATANTE HEMOS PUESTO TELEFONO EN VEZ DE NOMBRE
+			telefonoRegistro.clear();
 			contrasenyaRegistro.clear();
-			nombreLogin.setText(nombreS);
+			telefonoLogin.setText(telefonoS);
 			contrasenyaLogin.clear();
 			contrasenyaLogin.requestFocus();
 			

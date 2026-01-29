@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 public class Client {
     public static void main(String[] args) {
-        final String HOSTNAME = "LAPTOP-POLO"; // Cambia a el hostname del servidor 
+        final String HOSTNAME = "DAM2-22"; // Cambia a el hostname del servidor 
         final int PUERTO = 5000;
         
         

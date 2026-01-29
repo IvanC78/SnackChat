@@ -28,7 +28,7 @@ public class ControladorRegistro {
 	@FXML
 	private ColorPicker color;
 	@FXML
-	private TextField telefono;
+	private TextField telefonoRegistro;
 	@FXML
 	private Button registrarse;
 	
@@ -44,7 +44,7 @@ public class ControladorRegistro {
 		String contrasenyaS = contrasenya.getText(); 
 		String contrasenya2S = segundacontrasenya.getText();
 		Color colorC = color.getValue();
-		String telefonoS = telefono.getText();
+		String telefonoS = telefonoRegistro.getText();
 		
 		if(usuarioS.isEmpty() || contrasenyaS.isEmpty() || contrasenya2S.isEmpty() || telefonoS.isEmpty()) {
 			alerta.setHeaderText("ÑAM");

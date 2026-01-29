@@ -118,4 +118,20 @@ public class UsuarioDAO {
 			sesion.close();
 		}
 	}
+	
+	public static Usuario buscarPorTelefono(String telefono) {
+		Session session = Server.sessionFactory.openSession();
+		try {
+			String hql = "FROM Usuario WHERE telefono = :t";
+			Query<Usuario> query = session.createQuery(hql, Usuario.class);
+			query.setParameter("t", telefono);
+			query.setMaxResults(1);
+			return query.uniqueResult();
+		} catch (Exception e) {
+			System.err.println("[Error] No se pudo buscar el telefono: " + e.getMessage());
+			return null;
+		} finally {
+			session.close();
+		}
+	}
 }
