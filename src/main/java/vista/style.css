@@ -1,0 +1,80 @@
+/* --- CONFIGURACIÓN GENERAL --- */
+.root {
+    -fx-background-color: #fdf6ec; /* Blanco hueso para no cansar la vista */
+    -fx-font-family: "Segoe UI", system-ui, sans-serif;
+}
+
+/* --- TEXTOS Y ETIQUETAS --- */
+.text, .label {
+    -fx-fill: #4a4a4a;
+    -fx-font-weight: bold;
+}
+
+.header-text {
+    -fx-fill: #f74e3b; /* Rojo para el logo/título principal */
+    -fx-font-size: 32px;
+}
+
+/* --- CAMPOS DE ENTRADA --- */
+.text-field, .password-field {
+    -fx-background-color: white;
+    -fx-border-color: #f0c994; /* Amarillo en los bordes */
+    -fx-border-width: 2;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-padding: 5;
+}
+
+.text-field:focused {
+    -fx-border-color: #6bc771; /* Cambia a verde al escribir */
+}
+
+/* --- LISTAS (LISTVIEW) --- */
+.list-view {
+    -fx-background-color: white;
+    -fx-border-color: #f0c994;
+    -fx-border-radius: 5;
+}
+
+.list-cell:filled:selected {
+    -fx-background-color: #f0c994; /* Amarillo para el contacto seleccionado */
+    -fx-text-fill: black;
+}
+
+.list-cell:filled:hover {
+    -fx-background-color: #fdf2e2;
+}
+
+/* --- BOTONES CON LA PALETA --- */
+.button {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-background-radius: 8;
+}
+
+/* Botón Crear / Principal (VERDE) */
+#buttonCrear, #buttonLogIn {
+    -fx-background-color: #6bc771;
+}
+#buttonCrear:hover, #buttonLogIn:hover { -fx-background-color: #5ab360; }
+
+/* Botón Modificar / Acción Secundaria (AMARILLO) */
+#buttonModificar {
+    -fx-background-color: #f0c994;
+    -fx-text-fill: #4a4a4a;
+}
+#buttonModificar:hover { -fx-background-color: #e5bc85; }
+
+/* Botones Eliminar y Salir (ROJO) */
+#buttonEliminar, #buttonExit {
+    -fx-background-color: #f74e3b;
+}
+#buttonEliminar:hover, #buttonExit:hover { -fx-background-color: #d63d2d; }
+
+/* --- CONTENEDORES --- */
+.flow-pane {
+    -fx-padding: 10;
+    -fx-hgap: 10;
+    -fx-vgap: 10;
+}
