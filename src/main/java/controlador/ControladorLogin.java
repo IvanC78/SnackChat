@@ -54,6 +54,9 @@ public class ControladorLogin {
 			return;
 		}
 		
+		telefonoEsValido(telefonoS);
+		
+		
 		// Validar contra la BD
 		Usuario usuario = ServicioLogin.validarLogin(telefonoS, contrasenyaS);
 		
@@ -85,48 +88,68 @@ public class ControladorLogin {
 			return;
 		}
 		
-		// Validar longitud mínima
-		if (telefonoS.length() < 3) {
-			mostrarAlerta("Error", "El nombre debe tener al menos 3 caracteres", Alert.AlertType.WARNING);
-			return;
-		}
-		
-		if (contrasenyaS.length() < 4) {
-			mostrarAlerta("Error", "La contraseña debe tener al menos 4 caracteres", Alert.AlertType.WARNING);
-			return;
-		}
-		
-		// Comprobar si el usuario ya existe || IMPORTATANTE HEMOS PUESTO TELEFONO EN VEZ DE NOMBRE
-		Usuario usuarioExistente = UsuarioDAO.buscarPorTelefono(telefonoS);
-		if (usuarioExistente != null) {
-			mostrarAlerta("Error", "Este telefono ya existe", Alert.AlertType.WARNING);
-			telefonoRegistro.clear();
-			return;
-		}
-		
-		// Crear nuevo usuario (siempre como usuario normal, no admin)
-		Usuario nuevoUsuario = new Usuario();
-		nuevoUsuario.setTelefono(telefonoS);
-		String passwordEncriptada = Seguridad.hashPassword(contrasenyaS);
-		nuevoUsuario.setContrasenya(passwordEncriptada);
-		nuevoUsuario.setAdmin(false); // Los nuevos registros son usuarios normales
-		
-		// Guardar en BD
-		try {
-			UsuarioDAO.guardarUsuario(nuevoUsuario);
-			mostrarAlerta("Éxito", "Cuenta creada correctamente. Inicia sesión ahora.", Alert.AlertType.INFORMATION);
+		if (telefonoEsValido(telefonoS)) {
+			if (contrasenyaS.length() < 4) {
+				mostrarAlerta("Error", "La contraseña debe tener al menos 4 caracteres", Alert.AlertType.WARNING);
+				return;
+			}
 			
-			// Limpiar campos | IMPORTATANTE HEMOS PUESTO TELEFONO EN VEZ DE NOMBRE
-			telefonoRegistro.clear();
-			contrasenyaRegistro.clear();
-			telefonoLogin.setText(telefonoS);
-			contrasenyaLogin.clear();
-			contrasenyaLogin.requestFocus();
+			// Comprobar si el usuario ya existe || IMPORTATANTE HEMOS PUESTO TELEFONO EN VEZ DE NOMBRE
+			Usuario usuarioExistente = UsuarioDAO.buscarPorTelefono(telefonoS);
+			if (usuarioExistente != null) {
+				mostrarAlerta("Error", "Este telefono ya existe", Alert.AlertType.WARNING);
+				telefonoRegistro.clear();
+				return;
+			}
 			
-		} catch (Exception e) {
-			mostrarAlerta("Error", "Error al crear la cuenta: " + e.getMessage(), Alert.AlertType.ERROR);
-			e.printStackTrace();
+			// Detectar si es admin mediante código secreto
+			boolean esAdmin = false;
+			String contrasenyaReal = contrasenyaS;
+			
+			// ~~~~~~~~Si la contraseña termina con "#ADMIN", es un administrador~~~~~~~~~~~~
+			if (contrasenyaS.endsWith("#ADMIN")) {
+				esAdmin = true;
+				contrasenyaReal = contrasenyaS.replace("#ADMIN", ""); // Reemplazamos #ADMIN por nada, así elimino la clave administrador
+				
+				if (contrasenyaReal.length() < 4) {
+					mostrarAlerta("Error", "La contraseña (sin código) debe tener al menos 4 caracteres", Alert.AlertType.WARNING);
+					return;
+				}
+				
+			}
+			
+			
+			
+			// Crear nuevo usuario
+			Usuario nuevoUsuario = new Usuario();
+			nuevoUsuario.setTelefono(telefonoS);
+			String passwordEncriptada = Seguridad.hashPassword(contrasenyaReal);
+			nuevoUsuario.setContrasenya(passwordEncriptada);
+			nuevoUsuario.setAdmin(esAdmin);
+			
+			// Guardar en BD
+			try {
+				UsuarioDAO.guardarUsuario(nuevoUsuario);
+				
+				String mensajeExito = esAdmin ? 
+					"Cuenta de ADMINISTRADOR creada correctamente. Inicia sesión ahora." : 
+					"Cuenta creada correctamente. Inicia sesión ahora.";
+				mostrarAlerta("Éxito", mensajeExito, Alert.AlertType.INFORMATION);
+				
+				// Limpiar campos | IMPORTATANTE HEMOS PUESTO TELEFONO EN VEZ DE NOMBRE
+				telefonoRegistro.clear();
+				contrasenyaRegistro.clear();
+				telefonoLogin.setText(telefonoS);
+				contrasenyaLogin.clear();
+				contrasenyaLogin.requestFocus();
+				
+			} catch (Exception e) {
+				mostrarAlerta("Error", "Error al crear la cuenta: " + e.getMessage(), Alert.AlertType.ERROR);
+				e.printStackTrace();
+			}
 		}
+		
+		
 	}
 
 	// ========== MÉTODOS AUXILIARES ==========
@@ -151,5 +174,33 @@ public class ControladorLogin {
 		alerta.setHeaderText(null);
 		alerta.setContentText(mensaje);
 		alerta.showAndWait();
+	}
+	
+	public boolean telefonoEsNumerico(String telefonoS) {
+		try {
+			Long.parseLong(telefonoS);
+			return true;
+		}catch(NumberFormatException e) {
+			alerta.setHeaderText("ÑAM");
+			alerta.setContentText("¡Solo acepta numeros!");
+			alerta.showAndWait();
+			return false;
+		}
+		
+	}
+	
+	public boolean telefonoEsValido(String telefonoS) {
+	    if (!telefonoEsNumerico(telefonoS)) {
+	        return false;
+	    }
+
+	    if (telefonoS.length() != 9) {
+	        alerta.setHeaderText("ÑAM");
+	        alerta.setContentText("¡El teléfono debe tener 9 dígitos!");
+	        alerta.showAndWait();
+	        return false;
+	    }
+
+	    return true;
 	}
 }
