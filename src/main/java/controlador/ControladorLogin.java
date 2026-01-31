@@ -13,6 +13,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import modelo.ServicioLogin;
+import modelo.SesionUsuario;
 import modelo.Usuario;
 import modelo.UsuarioDAO;
 import seguridad.Seguridad;
@@ -66,13 +67,23 @@ public class ControladorLogin {
 			contrasenyaLogin.clear();
 			return;
 		}
+		SesionUsuario.setUsuarioActual(usuario);
 		
 		// Si es admin, ir a panel admin
 		if (usuario.isAdmin()) {
-			cargarPantalla("../vista/panelDeAdmin.fxml", event);
+		    cargarPantalla("../vista/panelDeAdmin.fxml", event);
+		    return;
+		}
+
+		// Comprobar si el perfil está incompleto
+		boolean perfilIncompleto =
+		        usuario.getNombreUsuario() == null || usuario.getNombreUsuario().isEmpty()
+		     || usuario.getColor() == null || usuario.getColor().isEmpty();
+
+		if (perfilIncompleto) {
+		    cargarPantalla("../vista/modificarPerfilInicio.fxml", event);
 		} else {
-			// Si es usuario normal, ir a chat general
-			cargarPantalla("../vista/listadoDeChat.fxml", event);
+		    cargarPantalla("../vista/listadoDeChat.fxml", event);
 		}
 	}
 

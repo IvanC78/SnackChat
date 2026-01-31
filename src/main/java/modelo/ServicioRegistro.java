@@ -16,6 +16,19 @@ public class ServicioRegistro {
 
 	        UsuarioDAO.guardarUsuario(u);
 	    }
+	  	public static void completarPerfil(String nombre, String color) {
+
+	        Usuario u = SesionUsuario.getUsuarioActual();
+
+	        if (u == null) {
+	            throw new IllegalStateException("No hay usuario en sesión");
+	        }
+
+	        u.setNombreUsuario(nombre);
+	        u.setColor(color);
+
+	        UsuarioDAO.actualizarUsuario(u);
+	    }
 
 	    public static void registrar(String nombre, String contrasenya, String telefono, String color) {
 	        Usuario u = new Usuario();
