@@ -41,6 +41,8 @@
 
         <mapping class="modelo.Mensaje"/>
         <mapping class="modelo.Usuario"/>
+        <mapping class="modelo.Chat"/>
+        <mapping class="modelo.Miembro"/>
 
     </session-factory>
 

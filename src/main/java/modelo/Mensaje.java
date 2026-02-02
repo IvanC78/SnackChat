@@ -16,6 +16,13 @@ public class Mensaje {
 		this.tipoTemporal = tipoTemporal;
 		this.fechaAccion = fechaAccion;
 	}
+	
+	public Mensaje(Usuario usuario, Chat chat, String contenido) {
+		this.usuario = usuario;
+		this.chat = chat;
+		this.contenido = contenido;
+		this.fechaEnvio = LocalDateTime.now();
+	}
 
 	public String getTipoTemporal() {
 		return tipoTemporal;
@@ -90,5 +97,9 @@ public class Mensaje {
 
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
+	}
+	
+	public String getEmisor() {
+		return usuario.getNombreUsuario();
 	}
 }

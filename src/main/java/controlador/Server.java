@@ -5,6 +5,7 @@ import org.hibernate.cfg.Configuration;
 
 import modelo.ManejadorCliente;
 import modelo.ProcesadorMensajesTemporal;
+import modelo.Usuario;
 
 import java.net.*;
 import java.util.*;
@@ -12,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class Server {
     // Mapa de clientes conectados
-    public static Map<String, ManejadorCliente> mapaClientes = new ConcurrentHashMap<>();
+    public static Map<Usuario, ManejadorCliente> mapaClientes = new ConcurrentHashMap<>();
 
     // Fábrica de conexiones Hibernate (Opción A: Única y estática)
     public static SessionFactory sessionFactory;

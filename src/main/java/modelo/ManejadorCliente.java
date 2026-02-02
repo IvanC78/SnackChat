@@ -16,7 +16,8 @@ import java.util.regex.Pattern;
 public class ManejadorCliente implements Runnable {
     private Socket socket;
     private PrintWriter out;
-    private String nombreUsuario;
+    private Usuario usuario;
+    private Chat chat;
 
     public ManejadorCliente(Socket socket) {
         this.socket = socket;
@@ -32,8 +33,8 @@ public class ManejadorCliente implements Runnable {
             out = new PrintWriter(socket.getOutputStream(), true);
 
             // Registro inicial: El primer mensaje del cliente es su nombre
-            this.nombreUsuario = in.readLine();
-            Server.mapaClientes.put(nombreUsuario, this);
+            this.usuario = UsuarioDAO.buscarPorNombre(in.readLine());
+            Server.mapaClientes.put(usuario, this);
 
             String msg;
             while ((msg = in.readLine()) != null) {
@@ -45,16 +46,16 @@ public class ManejadorCliente implements Runnable {
                     procesarQuemar(msg);
                 } else {
                     // Guardar en MySQL
-                    guardarEnBD(nombreUsuario, msg);
+                    guardarEnBD(usuario, chat,  msg);
                     // Retransmitir a todos
-                    Server.broadcast(nombreUsuario + ": " + msg);
+                    Server.broadcast(usuario.getNombreUsuario() + ": " + msg);
                 }
             }
         } catch (IOException e) {
-            System.out.println("Conexión perdida con " + nombreUsuario);
+            System.out.println("Conexión perdida con " + usuario.getNombreUsuario());
         } finally {
-            if (nombreUsuario != null) {
-                Server.mapaClientes.remove(nombreUsuario);
+            if (usuario != null) {
+                Server.mapaClientes.remove(usuario);
             }
             try { socket.close(); } catch (IOException e) {}
         }
@@ -87,12 +88,12 @@ public class ManejadorCliente implements Runnable {
             }
             
             // Guardar mensaje congelado en BD
-            guardarMensajeCongelado(nombreUsuario, mensaje, fechaAccion);
+            guardarMensajeCongelado(usuario, chat, mensaje, fechaAccion);
             
             // Notificar al usuario
             String tiempoTexto = cantidad + unidad;
             enviarMensaje("❄️ Mensaje congelado. Se descongelará en " + tiempoTexto);
-            Server.broadcast("❄️ SISTEMA: " + nombreUsuario + " ha enviado un mensaje congelado que se mostrará en " + tiempoTexto);
+            Server.broadcast("❄️ SISTEMA: " + usuario + " ha enviado un mensaje congelado que se mostrará en " + tiempoTexto);
             
         } catch (Exception e) {
             enviarMensaje("❌ Error al procesar comando /congelar: " + e.getMessage());
@@ -126,11 +127,11 @@ public class ManejadorCliente implements Runnable {
             }
             
             // Guardar mensaje para quemar en BD
-            guardarMensajeQuemar(nombreUsuario, mensaje, fechaAccion);
+            guardarMensajeQuemar(usuario, chat, mensaje, fechaAccion);
             
             // Mostrar mensaje inmediatamente
             String tiempoTexto = cantidad + unidad;
-            Server.broadcast("🔥 " + nombreUsuario + ": " + mensaje + " (se quemará en " + tiempoTexto + ")");
+            Server.broadcast("🔥 " + usuario.getNombreUsuario() + ": " + mensaje + " (se quemará en " + tiempoTexto + ")");
             
         } catch (Exception e) {
             enviarMensaje("❌ Error al procesar comando /quemar: " + e.getMessage());
@@ -169,11 +170,11 @@ public class ManejadorCliente implements Runnable {
         return fechaAccion;
     }
 
-    private void guardarEnBD(String emisor, String texto) {
+    private void guardarEnBD(Usuario emisor, Chat chat, String texto) {
         // Usamos la fábrica estática del Server
         try (Session session = Server.sessionFactory.openSession()) {
             Transaction t = session.beginTransaction();
-            session.persist(new Mensaje(emisor, texto));
+            session.persist(new Mensaje(emisor, chat, texto));
             t.commit();
             System.out.println("[DB] Mensaje de " + emisor + " guardado.");
         } catch (Exception e) {
@@ -181,25 +182,25 @@ public class ManejadorCliente implements Runnable {
         }
     }
     
-    private void guardarMensajeCongelado(String emisor, String texto, LocalDateTime fechaAccion) {
+    private void guardarMensajeCongelado(Usuario usuario, Chat chat,  String texto, LocalDateTime fechaAccion) {
         try (Session session = Server.sessionFactory.openSession()) {
             Transaction t = session.beginTransaction();
-            Mensaje mensaje = new Mensaje(emisor, texto, "CONGELADO", fechaAccion);
+            Mensaje mensaje = new Mensaje(usuario, chat, texto, "CONGELADO", fechaAccion);
             session.persist(mensaje);
             t.commit();
-            System.out.println("[DB] Mensaje congelado de " + emisor + " guardado.");
+            System.out.println("[DB] Mensaje congelado de " + usuario.getNombreUsuario() + " guardado.");
         } catch (Exception e) {
             System.err.println("[Error DB] No se pudo guardar mensaje congelado: " + e.getMessage());
         }
     }
     
-    private void guardarMensajeQuemar(String emisor, String texto, LocalDateTime fechaAccion) {
+    private void guardarMensajeQuemar(Usuario usuario, Chat chat, String texto, LocalDateTime fechaAccion) {
         try (Session session = Server.sessionFactory.openSession()) {
             Transaction t = session.beginTransaction();
-            Mensaje mensaje = new Mensaje(emisor, texto, "QUEMAR", fechaAccion);
+            Mensaje mensaje = new Mensaje(usuario, chat, texto, "QUEMAR", fechaAccion);
             session.persist(mensaje);
             t.commit();
-            System.out.println("[DB] Mensaje para quemar de " + emisor + " guardado.");
+            System.out.println("[DB] Mensaje para quemar de " + usuario.getNombreUsuario() + " guardado.");
         } catch (Exception e) {
             System.err.println("[Error DB] No se pudo guardar mensaje para quemar: " + e.getMessage());
         }
@@ -213,7 +214,7 @@ public class ManejadorCliente implements Runnable {
 
             ManejadorCliente receptor = Server.mapaClientes.get(destino);
             if (receptor != null) {
-                receptor.enviarMensaje("(Privado de " + nombreUsuario + "): " + contenido);
+                receptor.enviarMensaje("(Privado de " + usuario.getNombreUsuario() + "): " + contenido);
                 this.enviarMensaje("(Privado para " + destino + "): " + contenido);
             } else {
                 this.enviarMensaje("SISTEMA: Usuario " + destino + " no encontrado.");
