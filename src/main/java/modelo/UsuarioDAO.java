@@ -1,5 +1,7 @@
 package modelo;
 
+import java.util.List;
+
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
@@ -133,5 +135,18 @@ public class UsuarioDAO {
 		} finally {
 			session.close();
 		}
+	}
+	
+	
+	public static List<Usuario> obtenerTodosMenosActual(Long idActual) {
+	    Session session = Server.sessionFactory.openSession();
+	    try {
+	        String hql = "FROM Usuario WHERE id != :id";
+	        Query<Usuario> query = session.createQuery(hql, Usuario.class);
+	        query.setParameter("id", idActual);
+	        return query.list();
+	    } finally {
+	        session.close();
+	    }
 	}
 }
