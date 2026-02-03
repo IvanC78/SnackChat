@@ -1,106 +1,194 @@
 /* --- CONFIGURACIÓN GENERAL --- */
 .root {
-    -fx-background-color: #fdf6ec; /* Blanco hueso para no cansar la vista */
+    background-color: #fdfbf7;
+    /* Fallback */
+    background: linear-gradient(to bottom right, #fdfbf7, #fff0dc);
+    -fx-background-color: linear-gradient(to bottom right, #fdfbf7, #fff0dc);
+    font-family: "Segoe UI", system-ui, sans-serif;
     -fx-font-family: "Segoe UI", system-ui, sans-serif;
 }
 
 /* --- TEXTOS Y ETIQUETAS --- */
-.text, .label {
+.text,
+.label {
+    color: #4a4a4a;
+    fill: #4a4a4a;
     -fx-fill: #4a4a4a;
-    -fx-font-weight: bold;
+    font-weight: normal;
+    -fx-font-weight: normal;
 }
 
 .header-text {
-    -fx-fill: #f74e3b; /* Rojo para el logo/título principal */
-    -fx-font-size: 32px;
+    color: #f74e3b;
+    fill: #f74e3b;
+    -fx-fill: #f74e3b;
+    font-family: "Segoe UI Black";
+    -fx-font-family: "Segoe UI Black";
+    font-size: 36px;
+    -fx-font-size: 36px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 5, 0, 0, 2);
 }
 
 .section-title {
+    color: #3D6BA8;
+    fill: #3D6BA8;
     -fx-fill: #3D6BA8;
-    -fx-font-size: 14px;
+    font-size: 18px;
+    -fx-font-size: 18px;
+    font-weight: bold;
     -fx-font-weight: bold;
+    padding: 0 0 10 0;
+    -fx-padding: 0 0 10 0;
+}
+
+/* --- TARJETAS DE LOGIN/REGISTRO --- */
+.login-card {
+    background-color: white;
+    -fx-background-color: white;
+    border-radius: 15px;
+    -fx-background-radius: 15;
+    -fx-border-radius: 15;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 10, 0, 0, 5);
+    padding: 20px;
+    -fx-padding: 20;
+    -fx-spacing: 10;
+    max-width: 270px;
+    /* Reduced to fit side-by-side in 600px */
+    -fx-max-width: 270;
 }
 
 /* --- CAMPOS DE ENTRADA --- */
-.text-field, .password-field {
-    -fx-background-color: white;
-    -fx-border-color: #f0c994; /* Amarillo en los bordes */
-    -fx-border-width: 2;
-    -fx-border-radius: 5;
-    -fx-background-radius: 5;
-    -fx-padding: 5;
-    -fx-font-size: 12;
-}
-
-.text-field:focused, .password-field:focused {
-    -fx-border-color: #6bc771; /* Cambia a verde al escribir */
-    -fx-background-color: #fffbf5;
-}
-
-/* --- LISTAS (LISTVIEW) --- */
-.list-view {
-    -fx-background-color: white;
-    -fx-border-color: #f0c994;
-    -fx-border-radius: 5;
-}
-
-.list-cell:filled:selected {
-    -fx-background-color: #f0c994; /* Amarillo para el contacto seleccionado */
-    -fx-text-fill: black;
-}
-
-.list-cell:filled:hover {
-    -fx-background-color: #fdf2e2;
-}
-
-/* --- BOTONES CON LA PALETA --- */
-.button {
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
-    -fx-cursor: hand;
+.text-field,
+.password-field {
+    background-color: #ffffff;
+    -fx-background-color: #ffffff;
+    border-color: #e0e0e0;
+    -fx-border-color: #e0e0e0;
+    border-width: 1.5px;
+    -fx-border-width: 1.5;
+    border-radius: 8px;
+    -fx-border-radius: 8;
     -fx-background-radius: 8;
-    -fx-padding: 8 15 8 15;
-    -fx-font-size: 12;
+    padding: 10px;
+    -fx-padding: 10;
+    font-size: 13px;
+    -fx-font-size: 13px;
+    -fx-prompt-text-fill: #a0a0a0;
+}
+
+.text-field:focused,
+.password-field:focused {
+    border-color: #6bc771;
+    -fx-border-color: #6bc771;
+    background-color: #ffffff;
+    -fx-background-color: #ffffff;
+    -fx-effect: dropshadow(three-pass-box, rgba(107, 199, 113, 0.2), 5, 0, 0, 2);
+}
+
+/* --- BOTONES --- */
+.button {
+    color: white;
+    -fx-text-fill: white;
+    font-weight: bold;
+    -fx-font-weight: bold;
+    cursor: pointer;
+    -fx-cursor: hand;
+    border-radius: 25px;
+    -fx-background-radius: 25;
+    padding: 10px 20px;
+    -fx-padding: 10 20;
+    font-size: 13px;
+    -fx-font-size: 13px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.15), 3, 0, 0, 2);
+}
+
+.button:pressed {
+    -fx-effect: none;
+    -fx-translate-y: 1;
 }
 
 /* Botón Crear / Principal (VERDE) */
-#buttonCrear, #buttonLogin, #buttonRegistro {
-    -fx-background-color: #6bc771;
+#buttonCrear,
+#buttonLogin,
+#buttonRegistro {
+    background-color: #6bc771;
+    background: linear-gradient(to right, #6bc771, #5ab360);
+    -fx-background-color: linear-gradient(to right, #6bc771, #5ab360);
 }
-#buttonCrear:hover, #buttonLogin:hover, #buttonRegistro:hover { 
-    -fx-background-color: #5ab360; 
+
+#buttonCrear:hover,
+#buttonLogin:hover,
+#buttonRegistro:hover {
+    background-color: #7bd180;
+    background: linear-gradient(to right, #7bd180, #6ac470);
+    -fx-background-color: linear-gradient(to right, #7bd180, #6ac470);
 }
 
 /* Botón Modificar / Acción Secundaria (AMARILLO) */
 #buttonModificar {
+    background-color: #f0c994;
     -fx-background-color: #f0c994;
+    color: #4a4a4a;
     -fx-text-fill: #4a4a4a;
 }
-#buttonModificar:hover { 
-    -fx-background-color: #e5bc85; 
+
+#buttonModificar:hover {
+    background-color: #e5bc85;
+    -fx-background-color: #e5bc85;
 }
 
 /* Botones Eliminar y Salir (ROJO) */
-#buttonEliminar, #buttonExit {
+#buttonEliminar,
+#buttonExit {
+    background-color: #f74e3b;
     -fx-background-color: #f74e3b;
 }
-#buttonEliminar:hover, #buttonExit:hover { 
-    -fx-background-color: #d63d2d; 
+
+#buttonEliminar:hover,
+#buttonExit:hover {
+    background-color: #d63d2d;
+    -fx-background-color: #d63d2d;
+}
+
+/* --- ALERTAS Y OTROS --- */
+.list-view {
+    background-color: white;
+    -fx-background-color: white;
+    border-color: #f0c994;
+    -fx-border-color: #f0c994;
+    border-radius: 5px;
+    -fx-border-radius: 5;
+}
+
+.list-cell:filled:selected {
+    background-color: #f0c994;
+    -fx-background-color: #f0c994;
+    color: black;
+    -fx-text-fill: black;
+}
+
+.list-cell:filled:hover {
+    background-color: #fdf2e2;
+    -fx-background-color: #fdf2e2;
 }
 
 /* --- CONTENEDORES --- */
 .flow-pane {
+    padding: 10px;
     -fx-padding: 10;
     -fx-hgap: 10;
     -fx-vgap: 10;
 }
 
-.h-box, .v-box {
+.h-box,
+.v-box {
     -fx-spacing: 10;
+    padding: 10px;
     -fx-padding: 10;
 }
 
 /* --- ALERTAS --- */
 .alert {
+    padding: 15px;
     -fx-padding: 15;
 }

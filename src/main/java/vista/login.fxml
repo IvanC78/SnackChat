@@ -6,56 +6,43 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="500.0" styleClass="root" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controlador.ControladorLogin">
+<VBox xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controlador.ControladorLogin"
+      stylesheets="@style.css" styleClass="root"
+      alignment="CENTER" spacing="20" fillWidth="false">
 
-  <stylesheets>
-    <URL value="@style.css" />
-  </stylesheets>
+    <!-- HEADER / LOGO -->
+    <Text styleClass="header-text" text="SnackChat" />
 
-  <columnConstraints>
-    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="50.0" />
-    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="400.0" />
-    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="50.0" />
-  </columnConstraints>
+    <HBox alignment="CENTER" spacing="20">
+        <!-- LOGIN CARD -->
+        <VBox styleClass="login-card" alignment="CENTER_LEFT" spacing="10" HBox.hgrow="ALWAYS">
+            <Text styleClass="section-title" text="INICIAR SESIÓN" />
+            
+            <Text text="Teléfono" />
+            <TextField fx:id="telefonoLogin" promptText="Tu teléfono..." maxWidth="Infinity" />
+            
+            <Text text="Contraseña" />
+            <PasswordField fx:id="contrasenyaLogin" promptText="Tu clave secreta..." maxWidth="Infinity" />
+            
+            <Button fx:id="buttonLogin" onAction="#login" text="EMPEZAR A CHATEAR" 
+                    maxWidth="Infinity" defaultButton="true" style="-fx-margin-top: 10;" />
+        </VBox>
 
-  <rowConstraints>
-    <RowConstraints minHeight="10.0" prefHeight="60.0" vgrow="SOMETIMES" />
-    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-    <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
-    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-    <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
-    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-    <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
-    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-    <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
-    <RowConstraints minHeight="10.0" prefHeight="80.0" vgrow="SOMETIMES" />
-      <RowConstraints />
-  </rowConstraints>
+        <!-- REGISTRATION CARD -->
+        <VBox styleClass="login-card" alignment="CENTER_LEFT" spacing="10" HBox.hgrow="ALWAYS">
+            <Text styleClass="section-title" text="¿NUEVO AQUÍ? REGÍSTRATE" />
+            
+            <TextField fx:id="telefonoRegistro" promptText="Introduce tu número de teléfono..." maxWidth="Infinity" />
+            <PasswordField fx:id="contrasenyaRegistro" promptText="Crea una contraseña..." maxWidth="Infinity" />
+            
+            <Button fx:id="buttonRegistro" onAction="#registro" text="CREAR CUENTA" 
+                    maxWidth="Infinity" />
+        </VBox>
+    </HBox>
 
-   <children>
-      <Text styleClass="header-text" text="SnackChat" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-
-      <!-- LOGIN SECTION -->
-      <Text styleClass="section-title" text="INICIAR SESIÓN" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-      
-      <Text text="Telefono" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-      <TextField fx:id="telefonoLogin" promptText="Tu telefono..." GridPane.columnIndex="1" GridPane.rowIndex="3" />
-
-      <Text text="Contraseña" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-      <PasswordField fx:id="contrasenyaLogin" promptText="Tu clave secreta..." GridPane.columnIndex="1" GridPane.rowIndex="5" />
-
-      <Button fx:id="buttonLogin" onAction="#login" prefHeight="45.0" prefWidth="200.0" text="EMPEZAR A CHATEAR" textFill="#151515" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="6" />
-
-      <!-- REGISTRATION SECTION -->
-      <Text styleClass="section-title" text="REGISTRARSE" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-      
-      <TextField fx:id="telefonoRegistro" promptText="Introduce tu número de teléfono..." GridPane.columnIndex="1" GridPane.rowIndex="8" />
-      
-      <PasswordField fx:id="contrasenyaRegistro" promptText="Crea una contraseña..." GridPane.columnIndex="1" GridPane.rowIndex="9" />
-
-      <Button fx:id="buttonRegistro" onAction="#registro" prefHeight="40.0" prefWidth="200.0" text="CREAR CUENTA" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="10" />
-   </children>
-</GridPane>
+</VBox>
