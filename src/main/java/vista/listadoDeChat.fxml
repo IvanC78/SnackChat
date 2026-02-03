@@ -10,11 +10,10 @@
 <VBox xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controlador.ControladorListadoDeChat"
       stylesheets="@style.css" styleClass="root"
       spacing="15" alignment="TOP_CENTER" fillWidth="true"
-      style="-fx-padding: 20;">
+      style="-fx-padding: 30;">
 
     <!-- HEADER: User Profile -->
-    <HBox alignment="CENTER_LEFT" spacing="10" 
-          style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 5, 0, 0, 1);">
+    <HBox alignment="CENTER_LEFT" spacing="15" styleClass="chat-header">
         <Label style="-fx-font-size: 24px;" text="👤" />
         <Label fx:id="labelNombreUsuario" styleClass="header-text" text="Usuario" style="-fx-font-size: 20px;" />
     </HBox>
