@@ -14,6 +14,7 @@ import javafx.stage.Stage;
 import modelo.SesionUsuario;
 import modelo.Usuario;
 import modelo.UsuarioDAO;
+import red.ClienteSocket;
 
 import java.io.IOException;
 import java.net.URL;
@@ -57,14 +58,20 @@ public class ControladorListadoDeChat implements Initializable {
     }
 
     private void abrirChatPrivado(Usuario usuario) {
-    	try {
+        try {
+            ClienteSocket socket = ClienteSocket.getInstancia();
+            socket.enviar("OPEN_CHAT " + usuario.getId());
+
+            String respuesta = socket.getIn().readLine(); // CHAT_OK id
+            Long chatId = Long.parseLong(respuesta.split(" ")[1]);
+
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("../vista/chatPrivado.fxml")
             );
             Parent root = loader.load();
 
             ControladorChatPrivado controller = loader.getController();
-            controller.setContacto(usuario);
+            controller.inicializarChat(chatId, usuario);
 
             Stage stage = new Stage();
             stage.setTitle("Chat con " + usuario.getNombreUsuario());
@@ -75,6 +82,7 @@ public class ControladorListadoDeChat implements Initializable {
             e.printStackTrace();
         }
     }
+
     
     @FXML
     private void salir(ActionEvent event) throws IOException {

@@ -16,6 +16,7 @@ import modelo.ServicioLogin;
 import modelo.SesionUsuario;
 import modelo.Usuario;
 import modelo.UsuarioDAO;
+import red.ClienteSocket;
 import seguridad.Seguridad;
 
 public class ControladorLogin {
@@ -44,48 +45,70 @@ public class ControladorLogin {
 	}
 
 	// ========== MÉTODO LOGIN ==========
+	
 	@FXML
 	public void login(ActionEvent event) throws IOException {
-		String telefonoS = telefonoLogin.getText().trim();
-		String contrasenyaS = contrasenyaLogin.getText();
-		
-		// Validar que no estén vacíos
-		if (telefonoS.isEmpty() || contrasenyaS.isEmpty()) {
-			mostrarAlerta("Error", "Debes introducir usuario y contraseña", Alert.AlertType.WARNING);
-			return;
-		}
-		
-		telefonoEsValido(telefonoS);
-		
-		
-		// Validar contra la BD
-		Usuario usuario = ServicioLogin.validarLogin(telefonoS, contrasenyaS);
-		
-		if (usuario == null) {
-			mostrarAlerta("Error", "Telefono o contraseña incorrectos", Alert.AlertType.WARNING);
-			telefonoLogin.clear();
-			contrasenyaLogin.clear();
-			return;
-		}
-		SesionUsuario.setUsuarioActual(usuario);
-		
-		// Si es admin, ir a panel admin
-		if (usuario.isAdmin()) {
-		    cargarPantalla("../vista/panelDeAdmin.fxml", event);
-		    return;
-		}
+	    String telefonoS = telefonoLogin.getText().trim();
+	    String contrasenyaS = contrasenyaLogin.getText();
 
-		// Comprobar si el perfil está incompleto
-		boolean perfilIncompleto =
-		        usuario.getNombreUsuario() == null || usuario.getNombreUsuario().isEmpty()
-		     || usuario.getColor() == null || usuario.getColor().isEmpty();
+	    // Validar que no estén vacíos
+	    if (telefonoS.isEmpty() || contrasenyaS.isEmpty()) {
+	        mostrarAlerta("Error", "Debes introducir usuario y contraseña", Alert.AlertType.WARNING);
+	        return;
+	    }
 
-		if (perfilIncompleto) {
-		    cargarPantalla("../vista/modificarPerfilInicio.fxml", event);
-		} else {
-		    cargarPantalla("../vista/listadoDeChat.fxml", event);
-		}
+	    telefonoEsValido(telefonoS);
+
+	    // Validar contra la BD
+	    Usuario usuario = ServicioLogin.validarLogin(telefonoS, contrasenyaS);
+
+	    if (usuario == null) {
+	        mostrarAlerta("Error", "Telefono o contraseña incorrectos", Alert.AlertType.WARNING);
+	        telefonoLogin.clear();
+	        contrasenyaLogin.clear();
+	        return;
+	    }
+
+	    // ===============================
+	    // 🔴 AQUÍ ESTÁ LA SOLUCIÓN 🔴
+	    // ===============================
+
+	    // Guardar usuario en sesión (YA LO HACES, LO DEJAMOS)
+	    SesionUsuario.setUsuarioActual(usuario);
+
+	    // 🔌 CONECTAR SOCKET (UNA SOLA VEZ)
+	    try {
+	        ClienteSocket.getInstancia()
+	                .conectar("localhost", 5000, usuario.getNombreUsuario());
+	        System.out.println("Socket conectado correctamente");
+	    } catch (IOException e) {
+	        mostrarAlerta("Error", "No se pudo conectar al servidor", Alert.AlertType.ERROR);
+	        e.printStackTrace();
+	        return;
+	    }
+
+	    // ===============================
+	    // A PARTIR DE AQUÍ, TU CÓDIGO TAL CUAL
+	    // ===============================
+
+	    // Si es admin, ir a panel admin
+	    if (usuario.isAdmin()) {
+	        cargarPantalla("../vista/panelDeAdmin.fxml", event);
+	        return;
+	    }
+
+	    // Comprobar si el perfil está incompleto
+	    boolean perfilIncompleto =
+	            usuario.getNombreUsuario() == null || usuario.getNombreUsuario().isEmpty()
+	         || usuario.getColor() == null || usuario.getColor().isEmpty();
+
+	    if (perfilIncompleto) {
+	        cargarPantalla("../vista/modificarPerfilInicio.fxml", event);
+	    } else {
+	        cargarPantalla("../vista/listadoDeChat.fxml", event);
+	    }
 	}
+
 
 	// ========== MÉTODO REGISTRO ==========
 	@FXML
