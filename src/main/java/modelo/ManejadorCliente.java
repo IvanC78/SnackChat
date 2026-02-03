@@ -17,7 +17,7 @@ public class ManejadorCliente implements Runnable {
     private Socket socket;
     private PrintWriter out;
     private Usuario usuario;
-    private Chat chat;
+    private Chat chat = ChatDAO.obtenerPorId((long)1);
 
     public ManejadorCliente(Socket socket) {
         this.socket = socket;
