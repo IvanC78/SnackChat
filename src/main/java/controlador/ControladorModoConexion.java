@@ -30,6 +30,7 @@ public class ControladorModoConexion {
         try {
             // 1. Iniciar Servidor apuntando a localhost (es el anfitrión)
             String localIP = obtenerIPLocal();
+            String hostname = obtenerHostname();
 
             // Inicia Hibernate apuntando a local y arranca el Server Socket
             Server.iniciarModoServidor();
@@ -39,8 +40,10 @@ public class ControladorModoConexion {
 
             // Mostrar IP al usuario para que la comparta
             mostrarAlertaInfo("Modo Anfitrión Iniciado",
-                    "¡Servidor listo!\n\nTu IP es: " + localIP
-                            + "\n\nDile esta IP a tus compañeros para que se conecten.");
+                    "¡Servidor listo!\n\n" +
+                            "IP: " + localIP + "\n" +
+                            "Hostname: " + hostname + "\n\n" +
+                            "Comparte cualquiera de los dos con tus compañeros.");
 
             irALogin(event);
 
@@ -88,7 +91,15 @@ public class ControladorModoConexion {
         try {
             return InetAddress.getLocalHost().getHostAddress();
         } catch (Exception e) {
-            return "Desconocida (Error: " + e.getMessage() + ")";
+            return "Desconocida";
+        }
+    }
+
+    private String obtenerHostname() {
+        try {
+            return InetAddress.getLocalHost().getHostName();
+        } catch (Exception e) {
+            return "Desconocido";
         }
     }
 

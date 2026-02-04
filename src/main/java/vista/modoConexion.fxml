@@ -32,7 +32,7 @@
 
         <!-- MODO CLIENTE -->
         <Label style="-fx-font-size: 14px; -fx-font-weight: bold;" text="Unirse a otro equipo:" />
-        <TextField fx:id="campoIP" maxWidth="250" promptText="Introduce la IP del Anfitrión (ej: 192.168.1.X)" style="-fx-font-size: 14px;" />
+        <TextField fx:id="campoIP" maxWidth="250" promptText="IP o Hostname (ej: 192.168.1.X o PC-JUAN)" style="-fx-font-size: 14px;" />
         <Button fx:id="btnCliente" maxWidth="300" onAction="#modoCliente" style="-fx-font-size: 16px; -fx-padding: 10;" text="🔗 CONECTAR" />
         
     </VBox>
