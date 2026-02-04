@@ -15,7 +15,7 @@
 
     <!-- HEADER: Contact Info -->
     <HBox alignment="CENTER_LEFT" spacing="15" styleClass="chat-header">
-        <Label style="-fx-font-size: 24px;" text="👤" />
+        <Label fx:id="labelIcono" style="-fx-font-size: 24px;" text="👤" />
         <Label fx:id="labelContacto" styleClass="header-text" text="Usuario" style="-fx-font-size: 20px;" />
     </HBox>
 

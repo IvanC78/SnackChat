@@ -27,87 +27,84 @@ public class ControladorRegistro {
 	private TextField telefonoRegistro;
 	@FXML
 	private Button registrarse;
-	
-	
-	
+
 	Alert alerta = new Alert(Alert.AlertType.WARNING);
 	Alert alertaError = new Alert(Alert.AlertType.ERROR);
 	Alert alertaCorrecta = new Alert(Alert.AlertType.CONFIRMATION);
-	
+
 	@FXML
-	public void registro(ActionEvent event) throws IOException{
+	public void registro(ActionEvent event) throws IOException {
 		String usuarioS = usuario.getText();
-		String contrasenyaS = contrasenya.getText(); 
+		String contrasenyaS = contrasenya.getText();
 		String contrasenya2S = segundacontrasenya.getText();
 		Color colorC = color.getValue();
 		String telefonoS = telefonoRegistro.getText();
-		
-		if(usuarioS.isEmpty() || contrasenyaS.isEmpty() || contrasenya2S.isEmpty() || telefonoS.isEmpty()) {
+
+		if (usuarioS.isEmpty() || contrasenyaS.isEmpty() || contrasenya2S.isEmpty() || telefonoS.isEmpty()) {
 			alerta.setHeaderText("ÑAM");
 			alerta.setContentText("¡Debes rellenar todos los campos!");
 			alerta.showAndWait();
 			return;
 		}
-		
-		if(!contrasenyaS.equals(contrasenya2S)) {
+
+		if (!contrasenyaS.equals(contrasenya2S)) {
 			alerta.setHeaderText("ÑAM");
 			alerta.setContentText("¡Las contraseñas deben coincidir!");
 			alerta.showAndWait();
 			return;
 		}
-		
+
 		telefonoEsNumerico(telefonoS);
 		telefonoEsValido(telefonoS);
-		
-		if (!ServicioRegistro.telefonoDisponible(telefonoS)) { 
-			alertaError.setHeaderText("Teléfono duplicado"); 
-			alertaError.setContentText("¡Este teléfono ya esta registrado!"); 
-			alertaError.showAndWait(); 
-			return; 
+
+		if (!ServicioRegistro.telefonoDisponible(telefonoS)) {
+			alertaError.setHeaderText("Teléfono duplicado");
+			alertaError.setContentText("¡Este teléfono ya esta registrado!");
+			alertaError.showAndWait();
+			return;
 		}
-		
-		ServicioRegistro.registrar(usuarioS, contrasenyaS, telefonoS, colorC.toString());
-		alertaCorrecta.setHeaderText("Registro completado"); 
-		alertaCorrecta.setContentText("Usuario registrado correctamente"); 
+
+		String hexColor = "#" + colorC.toString().substring(2, 8);
+		ServicioRegistro.registrar(usuarioS, contrasenyaS, telefonoS, hexColor);
+		alertaCorrecta.setHeaderText("Registro completado");
+		alertaCorrecta.setContentText("Usuario registrado correctamente");
 		alertaCorrecta.showAndWait();
 		volver();
-		
-		
+
 	}
-	
+
 	public boolean telefonoEsNumerico(String telefonoS) {
 		try {
 			Long.parseLong(telefonoS);
 			return true;
-		}catch(NumberFormatException e) {
+		} catch (NumberFormatException e) {
 			alerta.setHeaderText("ÑAM");
 			alerta.setContentText("¡Solo acepta numeros!");
 			alerta.showAndWait();
 			return false;
 		}
 	}
-	
+
 	public boolean telefonoEsValido(String telefonoS) {
-	    if (!telefonoEsNumerico(telefonoS)) {
-	        return false;
-	    }
+		if (!telefonoEsNumerico(telefonoS)) {
+			return false;
+		}
 
-	    if (telefonoS.length() != 9) {
-	        alerta.setHeaderText("ÑAM");
-	        alerta.setContentText("¡El teléfono debe tener 9 dígitos!");
-	        alerta.showAndWait();
-	        return false;
-	    }
+		if (telefonoS.length() != 9) {
+			alerta.setHeaderText("ÑAM");
+			alerta.setContentText("¡El teléfono debe tener 9 dígitos!");
+			alerta.showAndWait();
+			return false;
+		}
 
-	    return true;
+		return true;
 	}
-	
+
 	public void volver() throws IOException {
-	    
-	    Stage stage = (Stage) registrarse.getScene().getWindow(); 
-	    stage.close();
-	    
+
+		Stage stage = (Stage) registrarse.getScene().getWindow();
+		stage.close();
+
 	}
 
-	
 }

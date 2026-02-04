@@ -27,7 +27,7 @@ public class ControladorListadoDeChat implements Initializable {
 
     @FXML
     private ListView<Usuario> contactos;
-    
+
     @FXML
     private Button buttonExit;
 
@@ -51,16 +51,42 @@ public class ControladorListadoDeChat implements Initializable {
 
     private void cargarUsuarios() {
         List<Usuario> usuarios = UsuarioDAO.obtenerTodosMenosActual(
-                SesionUsuario.getUsuarioActual().getId()
-        );
+                SesionUsuario.getUsuarioActual().getId());
         contactos.getItems().setAll(usuarios);
+
+        contactos.setCellFactory(lv -> new javafx.scene.control.ListCell<Usuario>() {
+            @Override
+            protected void updateItem(Usuario usuario, boolean empty) {
+                super.updateItem(usuario, empty);
+                if (empty || usuario == null) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    setText(usuario.getNombreUsuario());
+
+                    // Círculo de color
+                    javafx.scene.shape.Circle colorCircle = new javafx.scene.shape.Circle(8);
+                    String colorHex = usuario.getColor();
+                    if (colorHex == null || !colorHex.matches("^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$")) {
+                        colorHex = "#cccccc"; // Default gris
+                    }
+                    try {
+                        colorCircle.setFill(javafx.scene.paint.Color.web(colorHex));
+                    } catch (Exception e) {
+                        colorCircle.setFill(javafx.scene.paint.Color.GRAY);
+                    }
+                    setGraphic(colorCircle);
+                    setGraphicTextGap(10);
+                    setStyle("-fx-font-family: 'Segoe UI'; -fx-font-size: 14px; -fx-padding: 5;");
+                }
+            }
+        });
     }
 
     private void abrirChatPrivado(Usuario usuario) {
-    	try {
+        try {
             FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("../vista/chatPrivado.fxml")
-            );
+                    getClass().getResource("../vista/chatPrivado.fxml"));
             Parent root = loader.load();
 
             ControladorChatPrivado controller = loader.getController();
@@ -75,15 +101,14 @@ public class ControladorListadoDeChat implements Initializable {
             e.printStackTrace();
         }
     }
-    
+
     @FXML
     private void salir(ActionEvent event) throws IOException {
 
         SesionUsuario.cerrarSesion();
 
         FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("../vista/login.fxml")
-        );
+                getClass().getResource("../vista/login.fxml"));
         Parent root = loader.load();
 
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
