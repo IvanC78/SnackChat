@@ -16,6 +16,7 @@ import modelo.ServicioLogin;
 import modelo.SesionUsuario;
 import modelo.Usuario;
 import modelo.UsuarioDAO;
+import red.ClienteSocket;
 import seguridad.Seguridad;
 
 public class ControladorLogin {
@@ -44,6 +45,7 @@ public class ControladorLogin {
 	}
 
 	// ========== MÉTODO LOGIN ==========
+
 	@FXML
 	public void login(ActionEvent event) throws IOException {
 		String telefonoS = telefonoLogin.getText().trim();
@@ -67,6 +69,18 @@ public class ControladorLogin {
 			return;
 		}
 		SesionUsuario.setUsuarioActual(usuario);
+
+		// 🔌 CONECTAR SOCKET (Intento de conexión del Remote)
+		try {
+			// Intentamos conectar, si falla no bloqueamos el login DB pero avisamos o
+			// seguimos
+			ClienteSocket.getInstancia()
+					.conectar("localhost", 5000, usuario.getNombreUsuario());
+			System.out.println("Socket conectado correctamente");
+		} catch (Exception e) {
+			System.err.println("Advertencia: No se pudo conectar al servidor de sockets (" + e.getMessage() + ")");
+			// No retornamos, permitimos el uso Offline con DB
+		}
 
 		// Aseguramos que el procesador de mensajes temporales esté corriendo
 		// (Por si el usuario no ejecutó Server.java manualmente)
