@@ -75,8 +75,8 @@ public class ControladorLogin {
 			// Intentamos conectar, si falla no bloqueamos el login DB pero avisamos o
 			// seguimos
 			ClienteSocket.getInstancia()
-					.conectar("localhost", 5000, usuario.getNombreUsuario());
-			System.out.println("Socket conectado correctamente");
+					.conectar(Server.SERVER_IP, 5000, usuario.getNombreUsuario());
+			System.out.println("Socket conectado correctamente a " + Server.SERVER_IP);
 		} catch (Exception e) {
 			System.err.println("Advertencia: No se pudo conectar al servidor de sockets (" + e.getMessage() + ")");
 			// No retornamos, permitimos el uso Offline con DB

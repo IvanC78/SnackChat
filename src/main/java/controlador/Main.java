@@ -13,10 +13,9 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
-
-			Parent root = FXMLLoader.load(getClass().getResource("../vista/login.fxml"));
+			// AHORA INICIAMOS EN MODO CONEXION
+			Parent root = FXMLLoader.load(getClass().getResource("../vista/modoConexion.fxml"));
 			Scene scene = new Scene(root, 600, 500);
-			// scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setScene(scene);
 			primaryStage.show();
 		} catch (Exception e) {
@@ -25,32 +24,27 @@ public class Main extends Application {
 	}
 
 	public static void main(String[] args) {
+		launch(args);
+	}
+
+	// Método estático auxiliar para crear datos de prueba (LLAMAR DESDE
+	// ControladorModoConexion si es Host)
+	public static void asegurarDatosDePrueba() {
 		try {
-			Server.iniciarHibernate();
-
-			// Silenciar logs de Hibernate agresivamente
-			java.util.logging.Logger.getLogger("org.hibernate").setLevel(java.util.logging.Level.SEVERE);
-
-			// Crear usuarios de prueba si no existen
-			// Crear usuarios de prueba si no existen
 			crearUsuarioSiNoExiste("Bocata", "111111111", "1234", "#FFA500");
 			crearUsuarioSiNoExiste("Patata", "222222222", "1234", "#8B4513");
 
-			// Asegurar que existe el Chat General (ID 1)
 			if (modelo.ChatDAO.obtenerPorId(1L) == null) {
 				modelo.Chat chatGeneral = new modelo.Chat();
 				chatGeneral.setNombre("General");
 				chatGeneral.setColor("#FFFFFF");
 				chatGeneral.setTipo(modelo.Tipo.GRUPAL);
 				modelo.ChatDAO.guardarChat(chatGeneral);
-				System.out.println("Chat General creado (ID asignado por BD).");
+				System.out.println("Chat General creado.");
 			}
-
 		} catch (Exception e) {
-			System.err.println("Error al inicializar: " + e.getMessage());
+			System.err.println("Error creando datos de prueba: " + e.getMessage());
 		}
-
-		launch(args);
 	}
 
 	private static void crearUsuarioSiNoExiste(String nombre, String telefono, String password, String color) {
