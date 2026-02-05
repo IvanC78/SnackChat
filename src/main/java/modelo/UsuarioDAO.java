@@ -141,9 +141,22 @@ public class UsuarioDAO {
 	public static List<Usuario> obtenerTodosMenosActual(Long idActual) {
 	    Session session = Server.sessionFactory.openSession();
 	    try {
-	        String hql = "FROM Usuario WHERE id != :id";
+	        String hql = "FROM Usuario WHERE id != :id AND admin != :a";
 	        Query<Usuario> query = session.createQuery(hql, Usuario.class);
 	        query.setParameter("id", idActual);
+	        query.setParameter("a", true);
+	        return query.list();
+	    } finally {
+	        session.close();
+	    }
+	}
+	
+	public static List<Usuario> obtenerTodos() {
+	    Session session = Server.sessionFactory.openSession();
+	    try {
+	        String hql = "FROM Usuario WHERE admin != :a";
+	        Query<Usuario> query = session.createQuery(hql, Usuario.class);
+	        query.setParameter("a", true);
 	        return query.list();
 	    } finally {
 	        session.close();
