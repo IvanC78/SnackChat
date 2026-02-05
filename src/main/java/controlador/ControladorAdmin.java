@@ -13,8 +13,10 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ColorPicker;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import modelo.SesionUsuario;
 import modelo.Usuario;
@@ -32,7 +34,7 @@ public class ControladorAdmin {
 	@FXML
 	TextField textFieldTelefono;
 	@FXML
-	TextField textFieldColor;
+	ColorPicker color;
 	@FXML
 	Button buttonCrear;
 	@FXML
@@ -55,12 +57,9 @@ public class ControladorAdmin {
 		        textFieldNombre.setText(u.getNombreUsuario());
 		        textFieldContrasenya.setText("");
 		        textFieldTelefono.setText(u.getTelefono());
-		        textFieldColor.setText(u.getColor());
+		        color.setValue(Color.web(u.getColor()));
 		    } else {
-		        textFieldNombre.setText("");
-		        textFieldContrasenya.setText("");
-		        textFieldTelefono.setText("");
-		        textFieldColor.setText("");
+		    	reiniciarParametros();
 		    }
 		});
 
@@ -100,13 +99,10 @@ public class ControladorAdmin {
 			Usuario u = new Usuario();
 			u.setNombreUsuario(textFieldNombre.getText());
 			u.setContrasenya(Seguridad.hashPassword(textFieldContrasenya.getText()));
-			u.setColor(textFieldColor.getText());
+			u.setColor("#" + color.getValue().toString().substring(2, 8));
 			u.setTelefono(textFieldTelefono.getText());
 			UsuarioDAO.guardarUsuario(u);
-	        textFieldNombre.setText("");
-	        textFieldContrasenya.setText("");
-	        textFieldTelefono.setText("");
-	        textFieldColor.setText("");
+			reiniciarParametros();
 			cargarUsuarios();
 			} else {
 				alerta.setHeaderText("ÑAM");
@@ -130,13 +126,10 @@ public class ControladorAdmin {
 				} else {
 					u.setContrasenya(seleccion.get().getContrasenya());
 				}
-				u.setColor(textFieldColor.getText());
+				u.setColor("#" + color.getValue().toString().substring(2, 8));
 				u.setTelefono(textFieldTelefono.getText());
 				UsuarioDAO.actualizarUsuario(u);
-		        textFieldNombre.setText("");
-		        textFieldContrasenya.setText("");
-		        textFieldTelefono.setText("");
-		        textFieldColor.setText("");
+				reiniciarParametros();
 				cargarUsuarios();
 			} else {
 				alerta.setHeaderText("ÑAM");
@@ -151,10 +144,7 @@ public class ControladorAdmin {
 	}
 	public void eliminar(ActionEvent e) {
 		UsuarioDAO.eliminarUsuario(seleccion.get().getId());
-        textFieldNombre.setText("");
-        textFieldContrasenya.setText("");
-        textFieldTelefono.setText("");
-        textFieldColor.setText("");
+		reiniciarParametros();
 		cargarUsuarios();
 	}
 	
@@ -171,4 +161,11 @@ public class ControladorAdmin {
 
 	}
 
+	public void reiniciarParametros() {
+        textFieldNombre.setText("");
+        textFieldContrasenya.setText("");
+        textFieldTelefono.setText("");
+        color.setValue(Color.web("#000000"));		
+	}
+	
 }
