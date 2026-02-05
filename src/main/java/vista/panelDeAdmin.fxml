@@ -2,6 +2,7 @@
 
 <?import java.net.URL?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ColorPicker?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -10,7 +11,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Text?>
 
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="700.0" styleClass="root" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="700.0" styleClass="root" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controlador.ControladorAdmin">
   <stylesheets>
     <URL value="@style.css" />
   </stylesheets>
@@ -30,7 +31,7 @@
   </rowConstraints>
    <children>
       <ListView fx:id="panelAdmin" prefHeight="200.0" prefWidth="300.0" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.rowSpan="5" />
-      <FlowPane fx:id="panelAdmin" alignment="CENTER" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
+      <FlowPane alignment="CENTER" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
          <children>
             <Text text="Nombre: " />
             <TextField fx:id="textFieldNombre" />
@@ -38,8 +39,8 @@
       </FlowPane>
       <FlowPane alignment="CENTER" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
          <children>
-            <Text text="Apellido: " />
-            <TextField fx:id="textFieldApellido" />
+            <Text text="Contraseña: " />
+            <TextField fx:id="textFieldContrasenya" />
          </children>
       </FlowPane>
       <FlowPane alignment="CENTER" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="3">
@@ -51,15 +52,15 @@
       <FlowPane alignment="CENTER" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="4">
          <children>
             <Text text="Color: " />
-            <TextField fx:id="textFieldColor" prefHeight="30.0" prefWidth="158.0" />
+            <ColorPicker fx:id="color" />
          </children>
       </FlowPane>
       <FlowPane alignment="CENTER" hgap="10.0" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="5">
          <children>
-            <Button fx:id="buttonCrear" text="Crear" />
-            <Button fx:id="buttonModificar" text="Modificar" />
-            <Button fx:id="buttonEliminar" text="Eliminar" />
-            <Button fx:id="buttonExit" text="Exit" />
+            <Button fx:id="buttonCrear" onAction="#crear" text="Crear" />
+            <Button fx:id="buttonModificar" onAction="#modificar" text="Modificar" />
+            <Button fx:id="buttonEliminar" onAction="#eliminar" text="Eliminar" />
+            <Button fx:id="buttonExit" onAction="#salir" text="Exit" />
          </children>
       </FlowPane>
    </children>

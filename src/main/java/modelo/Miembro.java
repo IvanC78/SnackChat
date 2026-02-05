@@ -1,5 +1,8 @@
 package modelo;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -20,10 +23,12 @@ public class Miembro {
 	
 	@ManyToOne
 	@JoinColumn(name="chat_id", referencedColumnName="id", nullable=false)
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Chat chat;
 	
 	@ManyToOne
 	@JoinColumn(name="usuario_id", referencedColumnName="id", nullable=false)
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Usuario usuario;
 
 	public Long getId() {

@@ -3,6 +3,9 @@ package modelo;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 @Entity
 @Table(name = "mensajes")
 public class Mensaje {
@@ -49,10 +52,12 @@ public class Mensaje {
 
 	@ManyToOne
 	@JoinColumn(name="usuario_id", referencedColumnName="id", nullable=false)
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Usuario usuario;
 	
 	@ManyToOne
 	@JoinColumn(name="chat_id", referencedColumnName="id", nullable=false)
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Chat chat;
 
     @Column(nullable = false, columnDefinition = "TEXT")
